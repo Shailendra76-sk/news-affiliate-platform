@@ -148,4 +148,125 @@ async def get_fallback_image(category: str) -> dict:
 async def get_article_image(
     title: str, 
     category_slug: str = "general"
-)
+) -> dict:
+    """
+    Main function - get best image for article
+    Tries Unsplash first, then Pexels, then fallback
+    """
+    
+    # Get search keywords for category
+    keywords = CATEGORY_KEYWORDS.get(
+        category_slug, 
+        CATEGORY_KEYWORDS["general"]
+    )
+    
+    # Extract keywords from title
+    title_words = [
+        word for word in title.split() 
+        if len(word) > 4
+    ][:3]
+    
+    # Build search query
+    if title_words:
+        query = " ".join(title_words)
+    else:
+        query = keywords[0]
+    
+    # Try Unsplash first
+    image = await fetch_unsplash_image(query)
+    if image:
+        logger.info(f"Image from Unsplash: {query}")
+        return image
+    
+    # Try category keyword if title query failed
+    image = await fetch_unsplash_image(keywords[0])
+    if image:
+        logger.info(f"Image from Unsplash (category): {keywords[0]}")
+        return image
+    
+    # Try Pexels
+    image = await fetch_pexels_image(query)
+    if image:
+        logger.info(f"Image from Pexels: {query}")
+        return image
+    
+    # Use fallback
+    logger.warning(f"Using fallback image for: {category_slug}")
+    return await get_fallback_image(category_slug)
+
+
+async def update_article_image(article_id: int, category_slug: str, title: str):
+    """Update article with fetched image"""
+    from database import AsyncSessionLocal
+    from models import Article
+    from sqlalchemy import select
+    
+    image_data = await get_article_image(title, category_slug)
+    
+    async with AsyncSessionLocal() as session:
+        try:
+            result = await session.execute(
+                select(Article).where(Article.id == article_id)
+            )
+            article = result.scalar_one_or_none()
+            
+            if article:
+                article.featured_image = image_data["url"]
+                article.og_image = image_data["url"]
+                await session.commit()
+                logger.info(f"Image updated for article {article_id}")
+                return image_data
+                
+        except Exception as e:
+            await session.rollback()
+            logger.error(f"Error updating article image: {e}")
+            return None
+
+
+async def attach_images_to_articles():
+    """Attach images to articles that don't have one"""
+    from database import AsyncSessionLocal
+    from models import Article, Category
+    from sqlalchemy import select
+    
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(Article).where(
+                Article.featured_image == None,
+                Article.is_published == True
+            ).limit(20)
+        )
+        articles = result.scalars().all()
+        
+        logger.info(f"Attaching images to {len(articles)} articles...")
+        
+        for article in articles:
+            try:
+                # Get category slug
+                category_slug = "general"
+                if article.category_id:
+                    cat_result = await session.execute(
+                        select(Category).where(
+                            Category.id == article.category_id
+                        )
+                    )
+                    category = cat_result.scalar_one_or_none()
+                    if category:
+                        category_slug = category.slug
+                
+                await update_article_image(
+                    article.id, 
+                    category_slug, 
+                    article.title
+                )
+                
+                # Small delay to avoid API rate limits
+                await asyncio.sleep(0.5)
+                
+            except Exception as e:
+                logger.error(
+                    f"Error attaching image to article {article.id}: {e}"
+                )
+                continue
+        
+        logger.info("Image attachment complete!")
