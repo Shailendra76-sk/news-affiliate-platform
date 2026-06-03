@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - LootBazaar News</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">LootBazaar <span>News</span></span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="News search karein...">
+            <button onclick="searchNews()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <nav class="navbar" id="navbar">
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="category.html?cat=technology">💻 Technology</a></li>
+                <li><a href="category.html?cat=sports">🏏 Sports</a></li>
+                <li><a href="category.html?cat=business">💼 Business</a></li>
+                <li><a href="category.html?cat=entertainment">🎬 Entertainment</a></li>
+                <li><a href="category.html?cat=india">🇮🇳 India</a></li>
+                <li><a href="category.html?cat=world">🌍 World</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Main -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Search Header -->
+        <div class="search-header">
+            <h1 id="searchTitle">Search Results</h1>
+            <p id="searchSubtitle" style="color:var(--text-light)"></p>
+        </div>
+
+        <!-- Big Search Bar -->
+        <div class="big-search-bar">
+            <input type="text"
+                   id="bigSearchInput"
+                   placeholder="Kuch bhi search karein...">
+            <button onclick="doSearch()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div class="content-grid">
+            <div>
+                <div class="articles-grid" id="searchResults">
+                    <div style="text-align:center; padding:60px;
+                                color:var(--text-light); grid-column:1/-1">
+                        <p style="font-size:3rem">🔍</p>
+                        <p>Kuch search karein...</p>
+                    </div>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🔥 Trending</h3>
+                    <div id="trendingPosts"></div>
+                </div>
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🛒 Top Deals</h3>
+                    <div id="topDeals"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <h3>🔥 LootBazaar News</h3>
+                <p>Latest Hindi/Hinglish news!</p>
+            </div>
+            <div class="footer-links">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="footer-categories">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="category.html?cat=technology">Technology</a></li>
+                    <li><a href="category.html?cat=sports">Sports</a></li>
+                    <li><a href="category.html?cat=business">Business</a></li>
+                    <li><a href="category.html?cat=entertainment">Entertainment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 LootBazaar News. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.search-header {
+    padding: 24px 0 16px;
+}
+
+.search-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.big-search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.big-search-bar input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.big-search-bar input:focus {
+    border-color: var(--primary);
+}
+
+.big-search-bar button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.big-search-bar button:hover {
+    background: var(--primary-dark);
+}
+</style>
+
+<script src="js/config.js"></script>
+<script>
+let currentQuery = '';
+let currentPage = 1;
+
+async function doSearch(page = 1) {
+    const input = document.getElementById('bigSearchInput');
+    const query = input?.value?.trim() || currentQuery;
+
+    if (!query || query.length < 2) {
+        showToast('Kam se kam 2 characters likhein', 'error');
+        return;
+    }
+
+    currentQuery = query;
+    currentPage = page;
+
+    // Update URL
+    const newUrl = `search.html?q=${encodeURIComponent(query)}`;
+    window.history.pushState({}, '', newUrl);
+
+    // Update title
+    document.getElementById('searchTitle').textContent =
+        `"${query}" ke liye results`;
+
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/search?q=${encodeURIComponent(query)}&page=${page}`
+        );
+        const data = await response.json();
+
+        if (data.success) {
+            renderResults(data.articles, query);
+            document.getElementById('searchSubtitle').textContent =
+                `${data.articles.length} articles mile`;
+        }
+    } catch (error) {
+        showSearchError();
+    }
+}
+
+function renderResults(articles, query) {
+    const grid = document.getElementById('searchResults');
+    if (!grid) return;
+
+    if (articles.length === 0) {
+        grid.innerHTML = `
+            <div style="text-align:center; padding:60px;
+                        color:var(--text-light); grid-column:1/-1">
+                <p style="font-size:3rem">😔</p>
+                <p>"${query}" ke liye koi result nahi mila</p>
+                <p style="margin-top:8px">
+                    Dusra keyword try karein
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = articles.map(article => {
+        const image = article.featured_image || CONFIG.DEFAULT_IMAGE;
+        const date = formatDate(article.published_at);
+
+        return `
+            <div class="article-card"
+                 onclick="window.location.href='article.html?slug=${article.slug}'">
+                <img class="article-card-image"
+                     src="${image}"
+                     alt="${article.title}"
+                     loading="lazy"
+                     onerror="this.src='${CONFIG.DEFAULT_IMAGE}'">
+                <div class="article-card-content">
+                    <span class="article-category-tag">📰 News</span>
+                    <h3 class="article-card-title">${article.title}</h3>
+                    <p class="article-card-summary">
+                        ${truncateText(article.summary, 100)}
+                    </p>
+                    <div class="article-card-meta">
+                        <span>📅 ${date}</span>
+                        <span>👁️ ${formatNumber(article.views)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function fetchTrending() {
+    try {
+        const response = await fetch(`${CONFIG.API_URL}/api/trending`);
+        const data = await response.json();
+
+        if (data.success) {
+            const container = document.getElementById('trendingPosts');
+            if (container) {
+                container.innerHTML = data.articles.map((a, i) => `
+                    <div class="trending-item"
+                         onclick="window.location.href='article.html?slug=${a.slug}'">
+                        <span class="trending-number">${i + 1}</span>
+                        <div class="trending-title">${a.title}</div>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (e) {}
+}
+
+function showSearchError() {
+    const grid = document.getElementById('searchResults');
+    if (grid) {
+        grid.innerHTML = `
+            <div style="text-align:center; padding:60px;
+                        color:var(--text-light); grid-column:1/-1">
+                <p>😔 Search nahi ho saka, dobara try karein</p>
+            </div>
+        `;
+    }
+}
+
+function searchNews() {
+    const query = document.getElementById('searchInput')?.value?.trim();
+    if (query) {
+        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initMenu();
+
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('q');
+
+    if (query) {
+        currentQuery = query;
+        document.getElementById('bigSearchInput').value = query;
+        doSearch(1);
+    }
+
+    // Enter key
+    document.getElementById('bigSearchInput')
+        ?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') doSearch(1);
+        });
+
+    fetchTrending();
+});
+</script>
+</body>
+</html>
