@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LootBazaar News - Latest Hindi News</title>
+    <meta name="description" content="Latest Hindi News - Technology, Sports, Business, Entertainment">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">LootBazaar <span>News</span></span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="News search karein...">
+            <button onclick="searchNews()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar" id="navbar">
+            <ul>
+                <li><a href="index.html" class="active">🏠 Home</a></li>
+                <li><a href="category.html?cat=technology">💻 Technology</a></li>
+                <li><a href="category.html?cat=sports">🏏 Sports</a></li>
+                <li><a href="category.html?cat=business">💼 Business</a></li>
+                <li><a href="category.html?cat=entertainment">🎬 Entertainment</a></li>
+                <li><a href="category.html?cat=education">📚 Education</a></li>
+                <li><a href="category.html?cat=india">🇮🇳 India</a></li>
+                <li><a href="category.html?cat=world">🌍 World</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Breaking News Ticker -->
+<div class="breaking-news">
+    <div class="container">
+        <span class="breaking-label">🚨 Breaking</span>
+        <div class="ticker-wrap">
+            <div class="ticker" id="newsTicker">
+                Latest news load ho raha hai...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        <div class="content-grid">
+
+            <!-- Left: Articles -->
+            <div class="articles-section">
+
+                <!-- Featured Article -->
+                <div class="featured-article" id="featuredArticle">
+                    <div class="skeleton-loader"></div>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="category-filter">
+                    <button class="filter-btn active" onclick="filterByCategory('all')">
+                        Sabhi
+                    </button>
+                    <button class="filter-btn" onclick="filterByCategory('technology')">
+                        💻 Tech
+                    </button>
+                    <button class="filter-btn" onclick="filterByCategory('sports')">
+                        🏏 Sports
+                    </button>
+                    <button class="filter-btn" onclick="filterByCategory('business')">
+                        💼 Business
+                    </button>
+                    <button class="filter-btn" onclick="filterByCategory('entertainment')">
+                        🎬 Entertainment
+                    </button>
+                </div>
+
+                <!-- Articles Grid -->
+                <div class="articles-grid" id="articlesGrid">
+                    <!-- Articles load honge yahan -->
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+            <!-- Right: Sidebar -->
+            <aside class="sidebar">
+
+                <!-- Trending -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">
+                        🔥 Trending Posts
+                    </h3>
+                    <div id="trendingPosts"></div>
+                </div>
+
+                <!-- Categories -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">
+                        📂 Categories
+                    </h3>
+                    <div id="categoriesList"></div>
+                </div>
+
+                <!-- Affiliate Widget -->
+                <div class="sidebar-widget affiliate-widget">
+                    <h3 class="widget-title">
+                        🛒 Top Deals
+                    </h3>
+                    <div id="topDeals"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <h3>🔥 LootBazaar News</h3>
+                <p>Latest Hindi/Hinglish news - Technology, Sports, Business aur bahut kuch!</p>
+            </div>
+            <div class="footer-links">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="footer-categories">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="category.html?cat=technology">Technology</a></li>
+                    <li><a href="category.html?cat=sports">Sports</a></li>
+                    <li><a href="category.html?cat=business">Business</a></li>
+                    <li><a href="category.html?cat=entertainment">Entertainment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 LootBazaar News. All rights reserved.</p>
+            <p class="affiliate-disclaimer">
+                * Affiliate links included. Purchases may earn us commission.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
