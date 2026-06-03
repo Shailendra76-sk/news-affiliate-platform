@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Category - LootBazaar News</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">LootBazaar <span>News</span></span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" 
+                   placeholder="News search karein...">
+            <button onclick="searchNews()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <nav class="navbar" id="navbar">
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="category.html?cat=technology">💻 Technology</a></li>
+                <li><a href="category.html?cat=sports">🏏 Sports</a></li>
+                <li><a href="category.html?cat=business">💼 Business</a></li>
+                <li><a href="category.html?cat=entertainment">🎬 Entertainment</a></li>
+                <li><a href="category.html?cat=education">📚 Education</a></li>
+                <li><a href="category.html?cat=india">🇮🇳 India</a></li>
+                <li><a href="category.html?cat=world">🌍 World</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Category Hero -->
+<div class="category-hero" id="categoryHero">
+    <div class="container">
+        <div class="category-hero-content">
+            <span id="categoryIcon" class="category-hero-icon">📰</span>
+            <h1 id="categoryName">Category</h1>
+            <p id="categoryDesc">Latest news articles</p>
+        </div>
+    </div>
+</div>
+
+<!-- Main -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">🏠 Home</a>
+            <span>›</span>
+            <span id="breadcrumbCat">Category</span>
+        </div>
+
+        <div class="content-grid">
+
+            <!-- Articles -->
+            <div>
+                <div class="articles-grid" id="articlesGrid">
+                    <!-- Loading -->
+                    ${[1,2,3,4,5,6].map(() => `
+                    <div class="article-card">
+                        <div class="skeleton-loader" 
+                             style="height:180px"></div>
+                        <div style="padding:16px">
+                            <div class="skeleton-line" 
+                                 style="height:14px;margin-bottom:8px"></div>
+                            <div class="skeleton-line" 
+                                 style="height:14px;width:70%"></div>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">📂 Sabhi Categories</h3>
+                    <div id="allCategories"></div>
+                </div>
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🔥 Trending</h3>
+                    <div id="trendingPosts"></div>
+                </div>
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🛒 Top Deals</h3>
+                    <div id="topDeals"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <h3>🔥 LootBazaar News</h3>
+                <p>Latest Hindi/Hinglish news!</p>
+            </div>
+            <div class="footer-links">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="footer-categories">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="category.html?cat=technology">Technology</a></li>
+                    <li><a href="category.html?cat=sports">Sports</a></li>
+                    <li><a href="category.html?cat=business">Business</a></li>
+                    <li><a href="category.html?cat=entertainment">Entertainment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 LootBazaar News. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.category-hero {
+    background: linear-gradient(
+        135deg, 
+        var(--primary), 
+        var(--primary-dark)
+    );
+    color: white;
+    padding: 40px 0;
+    margin-bottom: 8px;
+}
+
+.category-hero-content {
+    text-align: center;
+}
+
+.category-hero-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.category-hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.category-hero p {
+    opacity: 0.9;
+    font-size: 1rem;
+}
+</style>
+
+<script src="js/config.js"></script>
+<script>
+let currentPage = 1;
+let currentCat = 'general';
+
+async function loadCategoryArticles(page = 1) {
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/articles?page=${page}&limit=10&category=${currentCat}`
+        );
+        const data = await response.json();
+
+        if (data.success) {
+            renderArticles(data.articles);
+            renderPagination(data.page, data.pages);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function renderArticles(articles) {
+    const grid = document.getElementById('articlesGrid');
+    if (!grid) return;
+
+    if (articles.length === 0) {
+        grid.innerHTML = `
+            <div style="text-align:center; padding:60px;
+                        color:var(--text-light); grid-column:1/-1">
+                <p style="font-size:3rem">😔</p>
+                <p>Is category mein abhi koi article nahi hai</p>
+                <p style="margin-top:8px">
+                    Thodi der mein articles publish honge!
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = articles.map(article => {
+        const image = article.featured_image || CONFIG.DEFAULT_IMAGE;
+        const date = formatDate(article.published_at);
+
+        return `
+            <div class="article-card"
+                 onclick="window.location.href=
+                          'article.html?slug=${article.slug}'">
+                <img class="article-card-image"
+                     src="${image}"
+                     alt="${article.title}"
+                     loading="lazy"
+                     onerror="this.src='${CONFIG.DEFAULT_IMAGE}'">
+                <div class="article-card-content">
+                    <span class="article-category-tag">📰 News</span>
+                    <h3 class="article-card-title">${article.title}</h3>
+                    <p class="article-card-summary">
+                        ${truncateText(article.summary, 100)}
+                    </p>
+                    <div class="article-card-meta">
+                        <span>📅 ${date}</span>
+                        <span>👁️ ${formatNumber(article.views)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderPagination(current, total) {
+    const container = document.getElementById('pagination');
+    if (!container || total <= 1) return;
+
+    let buttons = '';
+
+    if (current > 1) {
+        buttons += `
+            <button class="page-btn" 
+                    onclick="goToPage(${current - 1})">
+                ← Pehle
+            </button>`;
+    }
+
+    for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || 
+            (i >= current - 2 && i <= current + 2)) {
+            buttons += `
+                <button class="page-btn 
+                        ${i === current ? 'active' : ''}"
+                        onclick="goToPage(${i})">
+                    ${i}
+                </button>`;
+        } else if (i === current - 3 || i === current + 3) {
+            buttons += `<span>...</span>`;
+        }
+    }
+
+    if (current < total) {
+        buttons += `
+            <button class="page-btn" 
+                    onclick="goToPage(${current + 1})">
+                Agle →
+            </button>`;
+    }
+
+    container.innerHTML = buttons;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    loadCategoryArticles(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function fetchTrending() {
+    try {
+        const response = await fetch(`${CONFIG.API_URL}/api/trending`);
+        const data = await response.json();
+        if (data.success) {
+            const container = document.getElementById('trendingPosts');
+            if (container) {
+                container.innerHTML = data.articles.map((a, i) => `
+                    <div class="trending-item"
+                         onclick="window.location.href=
+                                  'article.html?slug=${a.slug}'">
+                        <span class="trending-number">${i + 1}</span>
+                        <div class="trending-title">${a.title}</div>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (e) {}
+}
+
+async function fetchAllCategories() {
+    try {
+        const response = await fetch(`${CONFIG.API_URL}/api/categories`);
+        const data = await response.json();
+        if (data.success) {
+            const container = document.getElementById('allCategories');
+            if (container) {
+                container.innerHTML = data.categories.map(cat => `
+                    <div class="category-item"
+                         onclick="window.location.href=
+                                  'category.html?cat=${cat.slug}'"
+                         style="${cat.slug === currentCat ? 
+                                 'color:var(--primary);font-weight:700' : ''}">
+                        <span>${cat.icon} ${cat.name}</span>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (e) {}
+}
+
+function renderTopDeals() {
+    const container = document.getElementById('topDeals');
+    if (!container) return;
+
+    const deals = [
+        {
+            name: "Samsung Galaxy S24",
+            price: "₹74,999",
+            image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300",
+            url: "https://www.amazon.in/s?k=Samsung+Galaxy+S24&tag=sk200709-21"
+        },
+        {
+            name: "boAt Earbuds",
+            price: "₹1,999",
+            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300",
+            url: "https://www.amazon.in/s?k=boat+earbuds&tag=sk200709-21"
+        }
+    ];
+
+    container.innerHTML = deals.map(deal => `
+        <div class="deal-item">
+            <img class="deal-image"
+                 src="${deal.image}"
+                 alt="${deal.name}"
+                 onerror="this.src='${CONFIG.DEFAULT_IMAGE}'">
+            <div class="deal-name">${deal.name}</div>
+            <div class="deal-price">${deal.price}</div>
+            <a href="${deal.url}"
+               target="_blank"
+               class="deal-btn">
+                🛒 Amazon Par Dekho
+            </a>
+        </div>
+    `).join('');
+}
+
+function searchNews() {
+    const query = document.getElementById('searchInput')?.value?.trim();
+    if (query) {
+        window.location.href = 
+            `search.html?q=${encodeURIComponent(query)}`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initMenu();
+
+    const params = new URLSearchParams(window.location.search);
+    currentCat = params.get('cat') || 'general';
+
+    // Update hero
+    const catInfo = CONFIG.CATEGORIES[currentCat] || 
+                    { name: currentCat, icon: '📰' };
+
+    document.getElementById('categoryIcon').textContent = catInfo.icon;
+    document.getElementById('categoryName').textContent = catInfo.name;
+    document.getElementById('categoryDesc').textContent = 
+        `Latest ${catInfo.name} News in Hindi`;
+    document.getElementById('pageTitle').textContent = 
+        `${catInfo.name} - LootBazaar News`;
+    document.getElementById('breadcrumbCat').textContent = catInfo.name;
+
+    // Load data
+    loadCategoryArticles(1);
+    fetchTrending();
+    fetchAllCategories();
+    renderTopDeals();
+});
+</script>
+</body>
+</html>
