@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Article - LootBazaar News</title>
+    <meta name="description" id="metaDescription" content="">
+    <meta name="keywords" id="metaKeywords" content="">
+
+    <!-- Open Graph -->
+    <meta property="og:title" id="ogTitle" content="">
+    <meta property="og:description" id="ogDescription" content="">
+    <meta property="og:image" id="ogImage" content="">
+    <meta property="og:type" content="article">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitterTitle" content="">
+    <meta name="twitter:description" id="twitterDesc" content="">
+    <meta name="twitter:image" id="twitterImage" content="">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/article.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">LootBazaar <span>News</span></span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="News search karein...">
+            <button onclick="searchNews()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <nav class="navbar" id="navbar">
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="category.html?cat=technology">💻 Technology</a></li>
+                <li><a href="category.html?cat=sports">🏏 Sports</a></li>
+                <li><a href="category.html?cat=business">💼 Business</a></li>
+                <li><a href="category.html?cat=entertainment">🎬 Entertainment</a></li>
+                <li><a href="category.html?cat=education">📚 Education</a></li>
+                <li><a href="category.html?cat=india">🇮🇳 India</a></li>
+                <li><a href="category.html?cat=world">🌍 World</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb" id="breadcrumb">
+            <a href="index.html">🏠 Home</a>
+            <span>›</span>
+            <span id="breadcrumbCategory">News</span>
+            <span>›</span>
+            <span id="breadcrumbTitle">Article</span>
+        </div>
+
+        <div class="article-layout">
+
+            <!-- Article Content -->
+            <article class="article-main" id="articleContent">
+                <!-- Loading skeleton -->
+                <div class="article-skeleton">
+                    <div class="skeleton-line skeleton-title"></div>
+                    <div class="skeleton-line skeleton-meta"></div>
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="article-sidebar">
+
+                <!-- Share Widget -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">📤 Share Karein</h3>
+                    <div class="share-buttons" id="shareButtons">
+                        <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="share-btn facebook" onclick="shareFacebook()">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </button>
+                        <button class="share-btn twitter" onclick="shareTwitter()">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </button>
+                        <button class="share-btn copy" onclick="copyLink()">
+                            <i class="fas fa-link"></i> Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trending Widget -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🔥 Trending</h3>
+                    <div id="trendingPosts"></div>
+                </div>
+
+                <!-- Affiliate Widget -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🛒 Top Deals</h3>
+                    <div id="sidebarDeals"></div>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <h3>🔥 LootBazaar News</h3>
+                <p>Latest Hindi/Hinglish news - Technology, Sports, Business aur bahut kuch!</p>
+            </div>
+            <div class="footer-links">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="footer-categories">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="category.html?cat=technology">Technology</a></li>
+                    <li><a href="category.html?cat=sports">Sports</a></li>
+                    <li><a href="category.html?cat=business">Business</a></li>
+                    <li><a href="category.html?cat=entertainment">Entertainment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 LootBazaar News. All rights reserved.</p>
+            <p class="affiliate-disclaimer">
+                * Affiliate links included. Purchases may earn us commission.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/article.js"></script>
+</body>
+</html>
