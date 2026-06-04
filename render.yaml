@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: news-affiliate-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY_1
+        sync: false
+      - key: GROQ_API_KEY_2
+        sync: false
+      - key: GROQ_API_KEY_3
+        sync: false
+      - key: GEMINI_API_KEY_1
+        sync: false
+      - key: GEMINI_API_KEY_2
+        sync: false
+      - key: DEEPSEEK_API_KEY_1
+        sync: false
+      - key: DEEPSEEK_API_KEY_2
+        sync: false
+      - key: MISTRAL_API_KEY_1
+        sync: false
+      - key: MISTRAL_API_KEY_2
+        sync: false
+      - key: COHERE_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY_1
+        sync: false
+      - key: OPENROUTER_API_KEY_2
+        sync: false
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+      - key: AMAZON_ASSOCIATE_TAG
+        sync: false
+      - key: FACEBOOK_ACCESS_TOKEN
+        sync: false
+      - key: FACEBOOK_PAGE_ID
+        sync: false
+      - key: UNSPLASH_ACCESS_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite:///./news_platform.db
+      - key: ARTICLES_PER_CYCLE
+        value: "5"
+      - key: NEWS_FETCH_INTERVAL
+        value: "2"
+      - key: DEBUG
+        value: "False"
