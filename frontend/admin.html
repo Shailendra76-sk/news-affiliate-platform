@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - LootBazaar News</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="admin-header-content">
+        <div class="admin-logo">
+            🔥 LootBazaar <span>Admin</span>
+        </div>
+        <div class="admin-actions">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="index.html" class="back-btn">
+                🌐 Website Dekho
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <nav class="admin-nav">
+            <a href="#dashboard" 
+               class="admin-nav-item active" 
+               onclick="showSection('dashboard')">
+                📊 Dashboard
+            </a>
+            <a href="#articles" 
+               class="admin-nav-item" 
+               onclick="showSection('articles')">
+                📰 Articles
+            </a>
+            <a href="#automation" 
+               class="admin-nav-item" 
+               onclick="showSection('automation')">
+                🤖 Automation
+            </a>
+            <a href="#facebook" 
+               class="admin-nav-item" 
+               onclick="showSection('facebook')">
+                📘 Facebook
+            </a>
+            <a href="#affiliate" 
+               class="admin-nav-item" 
+               onclick="showSection('affiliate')">
+                🛒 Affiliate
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="admin-section active">
+            <h2 class="section-title">📊 Dashboard</h2>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card loading">
+                    <div class="stat-icon">📰</div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="totalArticles">--</div>
+                        <div class="stat-label">Total Articles</div>
+                    </div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="stat-icon">👁️</div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="totalViews">--</div>
+                        <div class="stat-label">Total Views</div>
+                    </div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="stat-icon">📘</div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="fbPosts">--</div>
+                        <div class="stat-label">Facebook Posts</div>
+                    </div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="stat-icon">🤖</div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="aiRequests">--</div>
+                        <div class="stat-label">AI Requests</div>
+                    </div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="stat-icon">🛒</div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="affiliateClicks">--</div>
+                        <div class="stat-label">Affiliate Clicks</div>
+                    </div>
+                </div>
+                <div class="stat-card loading">
+                    <div class="stat-icon">📡</div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="rawNews">--</div>
+                        <div class="stat-label">News Fetched</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>⚡ Quick Actions</h3>
+                <div class="actions-grid">
+                    <button class="action-btn primary" 
+                            onclick="runFullAutomation()">
+                        🚀 Full Cycle Run Karo
+                    </button>
+                    <button class="action-btn" 
+                            onclick="fetchNewsOnly()">
+                        📡 Sirf News Fetch Karo
+                    </button>
+                    <button class="action-btn" 
+                            onclick="generateArticlesOnly()">
+                        ✍️ Articles Generate Karo
+                    </button>
+                    <button class="action-btn" 
+                            onclick="runFacebookOnly()">
+                        📘 Facebook Post Karo
+                    </button>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="system-status">
+                <h3>🔧 System Status</h3>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-dot green"></span>
+                        <span>Backend API</span>
+                        <span class="status-value" id="apiStatus">
+                            Checking...
+                        </span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot green"></span>
+                        <span>Database</span>
+                        <span class="status-value">Connected</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot" id="aiStatusDot"></span>
+                        <span>AI System</span>
+                        <span class="status-value">Active</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot" id="fbStatusDot"></span>
+                        <span>Facebook</span>
+                        <span class="status-value">Connected</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Articles Section -->
+        <section id="articles" class="admin-section">
+            <div class="section-header">
+                <h2 class="section-title">📰 Articles</h2>
+                <button class="action-btn primary" 
+                        onclick="generateArticlesOnly()">
+                    ✍️ Naya Article Generate Karo
+                </button>
+            </div>
+
+            <div class="articles-table-wrap">
+                <table class="articles-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Words</th>
+                            <th>Views</th>
+                            <th>AI</th>
+                            <th>Date</th>
+                            <th>FB</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articlesTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center;padding:40px">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="adminPagination"></div>
+        </section>
+
+        <!-- Automation Section -->
+        <section id="automation" class="admin-section">
+            <h2 class="section-title">🤖 Automation Control</h2>
+
+            <div class="automation-grid">
+                <div class="automation-card">
+                    <h3>📡 News Fetcher</h3>
+                    <p>RSS feeds se latest news fetch karo</p>
+                    <div class="automation-stats">
+                        <span id="newsFetchCount">0 news fetched today</span>
+                    </div>
+                    <button class="action-btn primary" 
+                            onclick="fetchNewsOnly()">
+                        ▶ Abhi Fetch Karo
+                    </button>
+                </div>
+
+                <div class="automation-card">
+                    <h3>✍️ Article Generator</h3>
+                    <p>AI se articles generate karo</p>
+                    <div class="automation-stats">
+                        <label>Kitne articles?</label>
+                        <select id="articleCount">
+                            <option value="3">3 Articles</option>
+                            <option value="5" selected>5 Articles</option>
+                            <option value="10">10 Articles</option>
+                        </select>
+                    </div>
+                    <button class="action-btn primary" 
+                            onclick="generateArticlesOnly()">
+                        ▶ Generate Karo
+                    </button>
+                </div>
+
+                <div class="automation-card">
+                    <h3>📘 Facebook Poster</h3>
+                    <p>Articles aur news Facebook par post karo</p>
+                    <div class="automation-stats">
+                        <span id="fbPostCount">0 posts today</span>
+                    </div>
+                    <button class="action-btn primary" 
+                            onclick="runFacebookOnly()">
+                        ▶ Post Karo
+                    </button>
+                </div>
+
+                <div class="automation-card full-width">
+                    <h3>🚀 Full Automation Cycle</h3>
+                    <p>
+                        Ek click mein sab karo: 
+                        News Fetch → Articles Generate → 
+                        Images Attach → Affiliate Add → Facebook Post
+                    </p>
+                    <button class="action-btn primary large" 
+                            onclick="runFullAutomation()">
+                        🚀 Complete Cycle Run Karo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Automation Log -->
+            <div class="automation-log">
+                <h3>📋 Latest Log</h3>
+                <div class="log-container" id="automationLog">
+                    <p class="log-empty">
+                        Koi automation abhi nahi chali...
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Facebook Section -->
+        <section id="facebook" class="admin-section">
+            <h2 class="section-title">📘 Facebook Posts</h2>
+
+            <div class="fb-stats">
+                <div class="fb-stat-card">
+                    <div class="fb-stat-number" id="fbTotal">--</div>
+                    <div>Total Posts</div>
+                </div>
+                <div class="fb-stat-card">
+                    <div class="fb-stat-number" id="fbSuccess">--</div>
+                    <div>Successful</div>
+                </div>
+                <div class="fb-stat-card">
+                    <div class="fb-stat-number" id="fbFailed">--</div>
+                    <div>Failed</div>
+                </div>
+            </div>
+
+            <button class="action-btn primary" 
+                    onclick="runFacebookOnly()"
+                    style="margin-bottom:20px">
+                📘 Abhi Post Karo
+            </button>
+
+            <div class="articles-table-wrap">
+                <table class="articles-table">
+                    <thead>
+                        <tr>
+                            <th>Content</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fbTableBody">
+                        <tr>
+                            <td colspan="4" 
+                                style="text-align:center;padding:40px">
+                                Loading...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Affiliate Section -->
+        <section id="affiliate" class="admin-section">
+            <h2 class="section-title">🛒 Affiliate Analytics</h2>
+
+            <div class="affiliate-overview">
+                <div class="affiliate-stat">
+                    <div class="aff-number" id="totalClicks">--</div>
+                    <div>Total Clicks</div>
+                </div>
+                <div class="affiliate-stat">
+                    <div class="aff-number">sk200709-21</div>
+                    <div>Associate Tag</div>
+                </div>
+                <div class="affiliate-stat">
+                    <div class="aff-number" id="totalProducts">--</div>
+                    <div>Products</div>
+                </div>
+            </div>
+
+            <div class="affiliate-tip">
+                <h3>💡 Tips for More Earnings</h3>
+                <ul>
+                    <li>Technology articles mein mobile/laptop links dalo</li>
+                    <li>Sports articles mein cricket equipment dalo</li>
+                    <li>Education articles mein books/kindle dalo</li>
+                    <li>Traffic badhao = zyada clicks = zyada commission</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<style>
+/* Admin Layout */
+.admin-header {
+    background: var(--secondary);
+    color: white;
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.admin-logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+}
+
+.admin-logo span { color: var(--primary); }
+
+.admin-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.back-btn {
+    background: var(--primary);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.back-btn:hover { background: var(--primary-dark); }
+
+.admin-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 60px);
+}
+
+/* Admin Sidebar */
+.admin-sidebar {
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-nav-item {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+}
+
+.admin-nav-item:hover,
+.admin-nav-item.active {
+    background: rgba(255,107,53,0.1);
+    color: var(--primary);
+    border-left-color: var(--primary);
+}
+
+/* Admin Main */
+.admin-main { padding: 24px; background: var(--bg); }
+
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    box-shadow: var(--shadow);
+    transition: all 0.3s;
+}
+
+.stat-card:hover { transform: translateY(-2px); }
+
+.stat-icon { font-size: 2rem; }
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Quick Actions */
+.quick-actions {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.quick-actions h3 { margin-bottom: 16px; }
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.action-btn {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.3s;
+}
+
+.action-btn:hover { border-color: var(--primary); color: var(--primary); }
+.action-btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+.action-btn.primary:hover { background: var(--primary-dark); }
+.action-btn.large { padding: 14px 24px; font-size: 1rem; width: 100%; }
+
+/* System Status */
+.system-status {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.system-status h3 { margin-bottom: 16px; }
+
+.status-grid { display: flex; flex-direction: column; gap: 12px; }
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--bg);
+    border-radius: 8px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+}
+
+.status-dot.green { background: #48bb78; }
+.status-dot.red { background: #e53e3e; }
+.status-value { margin-left: auto; color: var(--text-light); font-size: 0.85rem; }
+
+/* Articles Table */
+.articles-table-wrap { overflow-x: auto; }
+
+.articles-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.articles-table th {
+    background: var(--secondary);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.articles-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+}
+
+.articles-table tr:hover td { background: var(--bg); }
+
+.badge {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-success { background: #c6f6d5; color: #276749; }
+.badge-error { background: #fed7d7; color: #9b2c2c; }
+.badge-pending { background: #fefcbf; color: #744210; }
+
+/* Automation */
+.automation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.automation-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.automation-card.full-width { grid-column: 1 / -1; }
+
+.automation-card h3 { margin-bottom: 8px; }
+.automation-card p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 16px; }
+
+.automation-stats {
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.automation-stats select {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* Automation Log */
+.automation-log {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.log-container {
+    background: #1a202c;
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #68d391;
+}
+
+.log-empty { color: #718096; }
+.log-info { color: #68d391; }
+.log-error { color: #fc8181; }
+.log-warn { color: #f6e05e; }
+
+/* Facebook Stats */
+.fb-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.fb-stat-card {
+    background: #1877f2;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.fb-stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+/* Affiliate */
+.affiliate-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.affiliate-stat {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.aff-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.affiliate-tip {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.affiliate-tip h3 { margin-bottom: 12px; }
+.affiliate-tip ul { padding-left: 20px; }
+.affiliate-tip li { margin-bottom: 8px; color: var(--text-light); }
+
+@media(max-width: 768px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { display: none; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .actions-grid { grid-template-columns: repeat(2, 1fr); }
+    .automation-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script src="js/config.js"></script>
+<script>
+// ========================================
+// ADMIN PANEL JS
+// ========================================
+
+function showSection(name) {
+    document.querySelectorAll('.admin-section')
+        .forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.admin-nav-item')
+        .forEach(n => n.classList.remove('active'));
+
+    document.getElementById(name)?.classList.add('active');
+    event.target.classList.add('active');
+}
+
+// Load Stats
+async function loadStats() {
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/admin/stats`
+        );
+        const data = await response.json();
+
+        if (data.success) {
+            const s = data.stats;
+            document.getElementById('totalArticles').textContent =
+                formatNumber(s.total_articles);
+            document.getElementById('totalViews').textContent =
+                formatNumber(s.total_views || 0);
+            document.getElementById('fbPosts').textContent =
+                formatNumber(s.facebook_posts);
+            document.getElementById('aiRequests').textContent =
+                formatNumber(s.ai_requests);
+            document.getElementById('affiliateClicks').textContent =
+                formatNumber(s.affiliate_clicks || 0);
+            document.getElementById('rawNews').textContent =
+                formatNumber(s.raw_news_fetched);
+
+            document.getElementById('fbTotal').textContent =
+                s.facebook_posts;
+            document.getElementById('fbSuccess').textContent =
+                s.facebook_posts;
+            document.getElementById('fbFailed').textContent = 0;
+            document.getElementById('totalClicks').textContent =
+                s.affiliate_clicks || 0;
+
+            // Remove loading class
+            document.querySelectorAll('.stat-card')
+                .forEach(c => c.classList.remove('loading'));
+
+            // Update API status
+            document.getElementById('apiStatus').textContent = '✅ Online';
+            document.getElementById('aiStatusDot').classList.add('green');
+            document.getElementById('fbStatusDot').classList.add('green');
+        }
+    } catch (error) {
+        addLog('❌ Stats load nahi ho sake: ' + error.message, 'error');
+        document.getElementById('apiStatus').textContent = '❌ Offline';
+    }
+}
+
+// Load Articles
+async function loadArticles(page = 1) {
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/articles?page=${page}&limit=15`
+        );
+        const data = await response.json();
+
+        if (data.success) {
+            const tbody = document.getElementById('articlesTableBody');
+            tbody.innerHTML = data.articles.map(a => `
+                <tr>
+                    <td>
+                        <a href="article.html?slug=${a.slug}"
+                           target="_blank"
+                           style="color:var(--primary)">
+                            ${truncateText(a.title, 60)}
+                        </a>
+                    </td>
+                    <td>${a.category_id || 'General'}</td>
+                    <td>${a.word_count}</td>
+                    <td>${formatNumber(a.views)}</td>
+                    <td>
+                        <span class="badge badge-success">AI</span>
+                    </td>
+                    <td>${formatDate(a.published_at)}</td>
+                    <td>
+                        <span class="badge badge-success">✅</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (error) {
+        addLog('❌ Articles load error: ' + error.message, 'error');
+    }
+}
+
+// Run Full Automation
+async function runFullAutomation() {
+    addLog('🚀 Full automation cycle shuru ho rahi hai...', 'info');
+
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/automation/run`,
+            { method: 'POST' }
+        );
+        const data = await response.json();
+
+        if (data.success) {
+            addLog('✅ Automation complete!', 'info');
+            addLog(
+                `📰 News: ${data.results.news_fetched}`, 
+                'info'
+            );
+            addLog(
+                `✍️ Articles: ${data.results.articles_generated}`, 
+                'info'
+            );
+            showToast('Automation complete!', 'success');
+            loadStats();
+            loadArticles();
+        }
+    } catch (error) {
+        addLog('❌ Automation error: ' + error.message, 'error');
+        showToast('Error aaya!', 'error');
+    }
+}
+
+// Fetch News Only
+async function fetchNewsOnly() {
+    addLog('📡 News fetch ho rahi hai...', 'info');
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/automation/fetch-news`,
+            { method: 'POST' }
+        );
+        const data = await response.json();
+        if (data.success) {
+            addLog(`✅ ${data.news_fetched} news fetch ho gayi!`, 'info');
+            showToast(`${data.news_fetched} news fetch ho gayi!`, 'success');
+        }
+    } catch (error) {
+        addLog('❌ News fetch error: ' + error.message, 'error');
+    }
+}
+
+// Generate Articles Only
+async function generateArticlesOnly() {
+    const count = document.getElementById('articleCount')?.value || 5;
+    addLog(`✍️ ${count} articles generate ho rahe hain...`, 'info');
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/automation/generate-articles?count=${count}`,
+            { method: 'POST' }
+        );
+        const data = await response.json();
+        if (data.success) {
+            addLog(
+                `✅ ${data.articles_generated} articles generate ho gaye!`, 
+                'info'
+            );
+            showToast(
+                `${data.articles_generated} articles ready!`, 
+                'success'
+            );
+            loadArticles();
+        }
+    } catch (error) {
+        addLog('❌ Article generation error: ' + error.message, 'error');
+    }
+}
+
+// Run Facebook Only
+async function runFacebookOnly() {
+    addLog('📘 Facebook posts ho rahi hain...', 'info');
+    try {
+        const response = await fetch(
+            `${CONFIG.API_URL}/api/automation/facebook`,
+            { method: 'POST' }
+        );
+        const data = await response.json();
+        if (data.success) {
+            addLog('✅ Facebook automation complete!', 'info');
+            showToast('Facebook posts done!', 'success');
+        }
+    } catch (error) {
+        addLog('❌ Facebook error: ' + error.message, 'error');
+    }
+}
+
+// Add Log Entry
+function addLog(message, type = 'info') {
+    const container = document.getElementById('automationLog');
+    if (!container) return;
+
+    const empty = container.querySelector('.log-empty');
+    if (empty) empty.remove();
+
+    const time = new Date().toLocaleTimeString('hi-IN');
+    const entry = document.createElement('div');
+    entry.className = `log-${type}`;
+    entry.textContent = `[${time}] ${message}`;
+    container.appendChild(entry);
+    container.scrollTop = container.scrollHeight;
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    loadStats();
+    loadArticles();
+});
+</script>
+</body>
+</html>
