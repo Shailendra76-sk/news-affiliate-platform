@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - LootBazaar News</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="logo-icon">🔥</span>
+                    <span class="logo-text">LootBazaar <span>News</span></span>
+                </a>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="News search karein...">
+            <button onclick="searchNews()"><i class="fas fa-search"></i></button>
+        </div>
+        <nav class="navbar" id="navbar">
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="category.html?cat=technology">💻 Technology</a></li>
+                <li><a href="category.html?cat=sports">🏏 Sports</a></li>
+                <li><a href="category.html?cat=business">💼 Business</a></li>
+                <li><a href="category.html?cat=entertainment">🎬 Entertainment</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="static-page">
+            <div class="breadcrumb">
+                <a href="index.html">🏠 Home</a>
+                <span>›</span>
+                <span>About Us</span>
+            </div>
+
+            <div class="static-content">
+                <h1>🔥 Hamare Baare Mein</h1>
+
+                <div class="about-hero">
+                    <p class="lead">
+                        LootBazaar News ek automated Hindi news platform hai 
+                        jo aapko latest news Hindi aur Hinglish mein deliver 
+                        karta hai!
+                    </p>
+                </div>
+
+                <h2>🎯 Hamara Misson</h2>
+                <p>
+                    Hamara mission hai ki har Indian ko unki apni bhasha mein 
+                    latest news mile. Technology, Sports, Business, 
+                    Entertainment - sab kuch ek jagah!
+                </p>
+
+                <h2>📰 Kya Milega Yahan?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span>💻</span>
+                        <h3>Technology</h3>
+                        <p>Latest tech news, gadgets, smartphones aur innovations</p>
+                    </div>
+                    <div class="feature-card">
+                        <span>🏏</span>
+                        <h3>Sports</h3>
+                        <p>Cricket, football aur sabhi sports ki latest updates</p>
+                    </div>
+                    <div class="feature-card">
+                        <span>💼</span>
+                        <h3>Business</h3>
+                        <p>Market, economy aur business world ki khabrein</p>
+                    </div>
+                    <div class="feature-card">
+                        <span>🎬</span>
+                        <h3>Entertainment</h3>
+                        <p>Bollywood, OTT aur entertainment ki dunia</p>
+                    </div>
+                    <div class="feature-card">
+                        <span>📚</span>
+                        <h3>Education</h3>
+                        <p>Exams, results aur education news</p>
+                    </div>
+                    <div class="feature-card">
+                        <span>🇮🇳</span>
+                        <h3>India News</h3>
+                        <p>Desh ki taaza khabrein</p>
+                    </div>
+                </div>
+
+                <h2>🤖 AI Powered Platform</h2>
+                <p>
+                    Hamara platform advanced AI technology use karta hai 
+                    jo automatically news fetch karta hai, articles generate 
+                    karta hai aur aap tak pahunchata hai - 24/7!
+                </p>
+
+                <h2>🛒 Affiliate Disclosure</h2>
+                <p>
+                    Hamare articles mein Amazon affiliate links hain. 
+                    Jab aap in links se kuch khareedein toh hame thoda 
+                    commission milta hai - aapko koi extra charge nahi hota!
+                </p>
+
+                <h2>📞 Contact Karein</h2>
+                <p>
+                    Koi bhi sawaal ya suggestion ke liye hamse 
+                    <a href="contact.html">yahan contact karein</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>© 2024 LootBazaar News. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.static-page { max-width: 800px; margin: 0 auto; padding: 24px 0; }
+.static-content { background: var(--bg-card); border-radius: 12px; padding: 32px; box-shadow: var(--shadow); }
+.static-content h1 { font-size: 2rem; margin-bottom: 24px; color: var(--primary); }
+.static-content h2 { font-size: 1.3rem; margin: 24px 0 12px; color: var(--text); border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+.static-content p { margin-bottom: 16px; line-height: 1.8; }
+.static-content a { color: var(--primary); }
+.lead { font-size: 1.1rem; font-weight: 500; background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(255,107,53,0.05)); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: 0 12px 12px 0; margin-bottom: 24px; }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+.feature-card { background: var(--bg); border-radius: 12px; padding: 16px; text-align: center; }
+.feature-card span { font-size: 2rem; }
+.feature-card h3 { margin: 8px 0 4px; font-size: 1rem; }
+.feature-card p { font-size: 0.85rem; color: var(--text-light); margin: 0; }
+@media(max-width:768px) { .features-grid { grid-template-columns: repeat(2,1fr); } }
+</style>
+
+<script src="js/config.js"></script>
+<script>
+function searchNews() {
+    const q = document.getElementById('searchInput')?.value?.trim();
+    if (q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
+}
+document.addEventListener('DOMContentLoaded', () => { initTheme(); initMenu(); });
+</script>
+</body>
+</html>
