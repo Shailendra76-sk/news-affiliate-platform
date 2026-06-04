@@ -59,8 +59,9 @@ async def startup():
 # HEALTH CHECK
 # ========================================
 
-@app.get("/")
-async def root():
+# Yahan get ki jagah api_route use karke dono methods allow karein
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root(request: Request):
     return {
         "status": "running",
         "app": "News Affiliate Platform",
@@ -69,9 +70,10 @@ async def root():
     }
 
 
-@app.get("/health")
-async def health():
+@app.api_route("/health", methods=["GET", "HEAD"])
+async def health(request: Request):
     return {"status": "healthy"}
+
 
 
 # ========================================
