@@ -21,10 +21,12 @@ AI_PROVIDERS = [
      "model": "mistral-small-latest", "priority": 3},
     {"provider": "cohere", "key_env": "COHERE_API_KEY", 
      "model": "command-r", "priority": 4},
+    {"provider": "gemini", "key_env": "GEMINI_API_KEY", 
+     "model": "gemini-2.5-flash", "priority": 5},
     {"provider": "together", "key_env": "TOGETHER_API_KEY", 
-     "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "priority": 5},
+     "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "priority": 6},
     {"provider": "openrouter", "key_env": "OPENROUTER_API_KEY", 
-     "model": "meta-llama/llama-3.1-8b-instruct:free", "priority": 6},
+     "model": "meta-llama/llama-3.1-8b-instruct:free", "priority": 7},
 ]
 
 failed_providers = {}
@@ -129,6 +131,32 @@ class AIManager:
             data = response.json()
             return data["message"]["content"][0]["text"]
 
+    async def _call_gemini(self, api_key, model, prompt):
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                params={"key": api_key},
+                headers={
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "contents": [
+                        {
+                            "parts": [
+                                {"text": prompt}
+                            ]
+                        }
+                    ],
+                    "generationConfig": {
+                        "maxOutputTokens": 4000,
+                        "temperature": 0.7
+                    }
+                }
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+
     async def _call_together(self, api_key, model, prompt):
         async with httpx.AsyncClient(timeout=30) as client:
             response = await client.post(
@@ -193,6 +221,8 @@ class AIManager:
                     content = await self._call_mistral(api_key, model, prompt)
                 elif provider == "cohere":
                     content = await self._call_cohere(api_key, model, prompt)
+                elif provider == "gemini":
+                    content = await self._call_gemini(api_key, model, prompt)
                 elif provider == "together":
                     content = await self._call_together(api_key, model, prompt)
                 elif provider == "openrouter":
