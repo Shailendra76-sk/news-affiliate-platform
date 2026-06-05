@@ -4,7 +4,7 @@
 
 const CONFIG = {
     // Backend API URL - Render deploy hone ke baad update karna
-    API_URL: "https://your-backend.onrender.com",
+    API_URL: "https://news-affiliate-platform.onrender.com",
     
     // Site Info
     SITE_NAME: "LootBazaar News",
