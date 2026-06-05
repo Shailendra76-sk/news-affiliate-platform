@@ -20,36 +20,28 @@ AI_PROVIDERS = [
      "model": "llama-3.3-70b-versatile", "priority": 1},
     {"provider": "groq", "key_env": "GROQ_API_KEY_3", 
      "model": "llama-3.3-70b-versatile", "priority": 1},
-    {"provider": "groq", "key_env": "GROQ_API_KEY_4", 
-     "model": "llama-3.3-70b-versatile", "priority": 1},
-    
-    # TIER 2 - Gemini
-    {"provider": "gemini", "key_env": "GEMINI_API_KEY_1", 
-     "model": "gemini-1.5-flash", "priority": 2},
-    {"provider": "gemini", "key_env": "GEMINI_API_KEY_2", 
-     "model": "gemini-1.5-flash", "priority": 2},
-    
-    # TIER 3 - DeepSeek
+   
+    # TIER 2 - DeepSeek
     {"provider": "deepseek", "key_env": "DEEPSEEK_API_KEY", 
      "model": "deepseek-chat", "priority": 3},
     
-    # TIER 4 - Mistral
+    # TIER 3 - Mistral
     {"provider": "mistral", "key_env": "MISTRAL_API_KEY", 
      "model": "mistral-small-latest", "priority": 4},
     
-    # TIER 5 - Cohere
+    # TIER 4 - Cohere
     {"provider": "cohere", "key_env": "COHERE_API_KEY", 
      "model": "command-r", "priority": 5},
     
-    # TIER 6 - Together AI
+    # TIER 5 - Together AI
     {"provider": "together", "key_env": "TOGETHER_API_KEY", 
      "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "priority": 6},
     
-    # TIER 7 - OpenRouter
+    # TIER 6 - OpenRouter
     {"provider": "openrouter", "key_env": "OPENROUTER_API_KEY", 
      "model": "meta-llama/llama-3.1-8b-instruct:free", "priority": 7},
     
-    # TIER 8 - Hugging Face (Emergency)
+    # TIER 7 - Hugging Face (Emergency)
     {"provider": "huggingface", "key_env": "HUGGINGFACE_API_KEY", 
      "model": "mistralai/Mistral-7B-Instruct-v0.3", "priority": 8},
 ]
