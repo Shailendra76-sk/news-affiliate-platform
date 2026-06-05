@@ -28,6 +28,7 @@ def count_words(text: str) -> int:
 
 def clean_json_response(text: str) -> str:
     """Clean AI response to extract JSON"""
+    # Remove markdown
     text = re.sub(r'```json\s*', '', text)
     text = re.sub(r'```\s*', '', text)
     text = text.strip()
@@ -36,8 +37,16 @@ def clean_json_response(text: str) -> str:
     start = text.find('{')
     end = text.rfind('}')
     if start != -1 and end != -1:
-        return text[start:end+1]
+        text = text[start:end+1]
+    
+    # Fix control characters
+    text = re.sub(r'[\x00-\x1f\x7f]', ' ', text)
+    text = text.replace('\n', ' ')
+    text = text.replace('\r', ' ')
+    text = text.replace('\t', ' ')
+    
     return text
+
 
 
 async def generate_article_prompt(news_title: str, 
