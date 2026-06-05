@@ -144,24 +144,26 @@ class AIManager:
             data = response.json()
             return data["choices"][0]["message"]["content"]
     
-    async def _call_cohere(self, api_key, model, prompt):
-        async with httpx.AsyncClient(timeout=30) as client:
-            response = await client.post(
-                "https://api.cohere.com/v2/chat",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": model,
-                    "message": prompt,
-                    "max_tokens": 4000,
-                    "temperature": 0.7
-                }
-            )
-            response.raise_for_status()
-            data = response.json()
-            return data["text"]
+async def _call_cohere(self, api_key, model, prompt):
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(
+            "https://api.cohere.com/v2/chat",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": model,
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 4000,
+                "temperature": 0.7
+            }
+        )
+        response.raise_for_status()
+        data = response.json()
+        return data["message"]["content"][0]["text"]
     
     async def _call_together(self, api_key, model, prompt):
         async with httpx.AsyncClient(timeout=30) as client:
