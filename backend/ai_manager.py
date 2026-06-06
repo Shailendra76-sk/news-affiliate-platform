@@ -9,24 +9,51 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 AI_PROVIDERS = [
-    {"provider": "groq", "key_env": "GROQ_API_KEY_1", 
+    # TIER 1 - Groq (Fastest)
+    {"provider": "groq", "key_env": "GROQ_API_KEY_1",
      "model": "llama-3.3-70b-versatile", "priority": 1},
-    {"provider": "groq", "key_env": "GROQ_API_KEY_2", 
+    {"provider": "groq", "key_env": "GROQ_API_KEY_2",
      "model": "llama-3.3-70b-versatile", "priority": 1},
-    {"provider": "groq", "key_env": "GROQ_API_KEY_3", 
+    {"provider": "groq", "key_env": "GROQ_API_KEY_3",
      "model": "llama-3.3-70b-versatile", "priority": 1},
-    {"provider": "deepseek", "key_env": "DEEPSEEK_API_KEY", 
-     "model": "deepseek-chat", "priority": 2},
-    {"provider": "mistral", "key_env": "MISTRAL_API_KEY", 
-     "model": "mistral-small-latest", "priority": 3},
-    {"provider": "cohere", "key_env": "COHERE_API_KEY", 
-     "model": "command-r", "priority": 4},
-    {"provider": "gemini", "key_env": "GEMINI_API_KEY", 
-     "model": "gemini-2.5-flash", "priority": 5},
-    {"provider": "together", "key_env": "TOGETHER_API_KEY", 
+
+    # TIER 2 - Gemini 2.5
+    {"provider": "gemini", "key_env": "GEMINI_API_KEY_1",
+     "model": "gemini-2.5-flash-preview-05-20", "priority": 2},
+    {"provider": "gemini", "key_env": "GEMINI_API_KEY_2",
+     "model": "gemini-2.5-flash-preview-05-20", "priority": 2},
+
+    # TIER 3 - DeepSeek
+    {"provider": "deepseek", "key_env": "DEEPSEEK_API_KEY_1",
+     "model": "deepseek-chat", "priority": 3},
+    {"provider": "deepseek", "key_env": "DEEPSEEK_API_KEY_2",
+     "model": "deepseek-chat", "priority": 3},
+
+    # TIER 4 - Mistral
+    {"provider": "mistral", "key_env": "MISTRAL_API_KEY_1",
+     "model": "mistral-small-latest", "priority": 4},
+    {"provider": "mistral", "key_env": "MISTRAL_API_KEY_2",
+     "model": "mistral-small-latest", "priority": 4},
+
+    # TIER 5 - Cohere
+    {"provider": "cohere", "key_env": "COHERE_API_KEY_1",
+     "model": "command-r", "priority": 5},
+    {"provider": "cohere", "key_env": "COHERE_API_KEY_2",
+     "model": "command-r", "priority": 5},
+
+    # TIER 6 - Together AI
+    {"provider": "together", "key_env": "TOGETHER_API_KEY",
      "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "priority": 6},
-    {"provider": "openrouter", "key_env": "OPENROUTER_API_KEY", 
+
+    # TIER 7 - OpenRouter
+    {"provider": "openrouter", "key_env": "OPENROUTER_API_KEY_1",
      "model": "meta-llama/llama-3.1-8b-instruct:free", "priority": 7},
+    {"provider": "openrouter", "key_env": "OPENROUTER_API_KEY_2",
+     "model": "mistralai/mistral-7b-instruct:free", "priority": 7},
+
+    # TIER 8 - HuggingFace (Emergency)
+    {"provider": "huggingface", "key_env": "HUGGINGFACE_API_KEY",
+     "model": "mistralai/Mistral-7B-Instruct-v0.3", "priority": 8},
 ]
 
 failed_providers = {}
@@ -51,7 +78,9 @@ class AIManager:
     def _mark_failed(self, provider_config):
         key = f"{provider_config['provider']}_{provider_config['key_env']}"
         failed_providers[key] = time.time()
-        logger.warning(f"Provider marked as failed: {provider_config['provider']}")
+        logger.warning(
+            f"Provider marked as failed: {provider_config['provider']}"
+        )
 
     async def _call_groq(self, api_key, model, prompt):
         async with httpx.AsyncClient(timeout=30) as client:
@@ -71,6 +100,22 @@ class AIManager:
             response.raise_for_status()
             data = response.json()
             return data["choices"][0]["message"]["content"]
+
+    async def _call_gemini(self, api_key, model, prompt):
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}",
+                json={
+                    "contents": [{"parts": [{"text": prompt}]}],
+                    "generationConfig": {
+                        "temperature": 0.7,
+                        "maxOutputTokens": 4000
+                    }
+                }
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"]
 
     async def _call_deepseek(self, api_key, model, prompt):
         async with httpx.AsyncClient(timeout=30) as client:
@@ -131,32 +176,6 @@ class AIManager:
             data = response.json()
             return data["message"]["content"][0]["text"]
 
-    async def _call_gemini(self, api_key, model, prompt):
-        async with httpx.AsyncClient(timeout=30) as client:
-            response = await client.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-                params={"key": api_key},
-                headers={
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "contents": [
-                        {
-                            "parts": [
-                                {"text": prompt}
-                            ]
-                        }
-                    ],
-                    "generationConfig": {
-                        "maxOutputTokens": 4000,
-                        "temperature": 0.7
-                    }
-                }
-            )
-            response.raise_for_status()
-            data = response.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"]
-
     async def _call_together(self, api_key, model, prompt):
         async with httpx.AsyncClient(timeout=30) as client:
             response = await client.post(
@@ -183,7 +202,9 @@ class AIManager:
                 headers={
                     "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json",
-                    "HTTP-Referer": os.getenv("APP_URL", "http://localhost"),
+                    "HTTP-Referer": os.getenv(
+                        "APP_URL", "https://indiaxpress.vercel.app"
+                    ),
                 },
                 json={
                     "model": model,
@@ -194,6 +215,22 @@ class AIManager:
             response.raise_for_status()
             data = response.json()
             return data["choices"][0]["message"]["content"]
+
+    async def _call_huggingface(self, api_key, model, prompt):
+        async with httpx.AsyncClient(timeout=60) as client:
+            response = await client.post(
+                f"https://api-inference.huggingface.co/models/{model}",
+                headers={"Authorization": f"Bearer {api_key}"},
+                json={
+                    "inputs": prompt,
+                    "parameters": {"max_new_tokens": 2000}
+                }
+            )
+            response.raise_for_status()
+            data = response.json()
+            if isinstance(data, list):
+                return data[0].get("generated_text", "")
+            return data.get("generated_text", "")
 
     async def generate(self, prompt: str, task_type: str = "general") -> dict:
         sorted_providers = sorted(
@@ -210,28 +247,32 @@ class AIManager:
             model = provider_config['model']
 
             try:
-                logger.info(f"Trying {provider} with model {model}")
+                logger.info(f"Trying {provider} - {model}")
                 start_time = time.time()
 
                 if provider == "groq":
                     content = await self._call_groq(api_key, model, prompt)
+                elif provider == "gemini":
+                    content = await self._call_gemini(api_key, model, prompt)
                 elif provider == "deepseek":
                     content = await self._call_deepseek(api_key, model, prompt)
                 elif provider == "mistral":
                     content = await self._call_mistral(api_key, model, prompt)
                 elif provider == "cohere":
                     content = await self._call_cohere(api_key, model, prompt)
-                elif provider == "gemini":
-                    content = await self._call_gemini(api_key, model, prompt)
                 elif provider == "together":
                     content = await self._call_together(api_key, model, prompt)
                 elif provider == "openrouter":
                     content = await self._call_openrouter(api_key, model, prompt)
+                elif provider == "huggingface":
+                    content = await self._call_huggingface(api_key, model, prompt)
                 else:
                     continue
 
                 response_time = time.time() - start_time
-                logger.info(f"Success with {provider}! Time: {response_time:.2f}s")
+                logger.info(
+                    f"✅ Success: {provider} in {response_time:.2f}s"
+                )
 
                 return {
                     "success": True,
@@ -244,13 +285,13 @@ class AIManager:
             except httpx.HTTPStatusError as e:
                 if e.response.status_code in [429, 503]:
                     self._mark_failed(provider_config)
-                    logger.warning(f"{provider} rate limited, trying next...")
+                    logger.warning(f"{provider} rate limited → next")
                 else:
                     logger.error(f"{provider} HTTP error: {e}")
                 continue
 
             except asyncio.TimeoutError:
-                logger.warning(f"{provider} timeout, trying next...")
+                logger.warning(f"{provider} timeout → next")
                 continue
 
             except Exception as e:
