@@ -1,16 +1,18 @@
-name: News Automation Scheduler
+name: IndiaXpress News Automation
 
 on:
   schedule:
-    # Every 2 hours
-    - cron: '0 */2 * * *'
+    # Every 20 minutes - 6AM to 10PM IST
+    # IST = UTC + 5:30
+    # 6AM IST = 0:30 UTC
+    # 10PM IST = 16:30 UTC
+    - cron: '0,20,40 1-16 * * *'
   workflow_dispatch:
-    # Manual trigger from GitHub
 
 jobs:
-  run-automation:
+  article-automation:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -21,13 +23,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Cache dependencies
+      - name: Cache pip
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
@@ -41,19 +41,12 @@ jobs:
           GROQ_API_KEY_1=${{ secrets.GROQ_API_KEY_1 }}
           GROQ_API_KEY_2=${{ secrets.GROQ_API_KEY_2 }}
           GROQ_API_KEY_3=${{ secrets.GROQ_API_KEY_3 }}
-          GROQ_API_KEY_4=${{ secrets.GROQ_API_KEY_4 }}
-          GEMINI_API_KEY_1=${{ secrets.GEMINI_API_KEY_1 }}
-          GEMINI_API_KEY_2=${{ secrets.GEMINI_API_KEY_2 }}
           DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
           MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }}
           COHERE_API_KEY=${{ secrets.COHERE_API_KEY }}
           TOGETHER_API_KEY=${{ secrets.TOGETHER_API_KEY }}
           OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
-          HUGGINGFACE_API_KEY=${{ secrets.HUGGINGFACE_API_KEY }}
-          AMAZON_ACCESS_KEY=${{ secrets.AMAZON_ACCESS_KEY }}
-          AMAZON_SECRET_KEY=${{ secrets.AMAZON_SECRET_KEY }}
           AMAZON_ASSOCIATE_TAG=${{ secrets.AMAZON_ASSOCIATE_TAG }}
-          AMAZON_COUNTRY=IN
           FACEBOOK_ACCESS_TOKEN=${{ secrets.FACEBOOK_ACCESS_TOKEN }}
           FACEBOOK_PAGE_ID=${{ secrets.FACEBOOK_PAGE_ID }}
           UNSPLASH_ACCESS_KEY=${{ secrets.UNSPLASH_ACCESS_KEY }}
@@ -65,25 +58,104 @@ jobs:
           DEBUG=False
           EOF
 
-      - name: Run automation cycle
+      - name: Run Article Automation
         run: |
           cd backend
           python -c "
           import asyncio
-          from scheduler import run_full_cycle
-          asyncio.run(run_full_cycle())
+          from news_fetcher import fetch_all_news
+          from article_generator import generate_articles_batch
+          from image_manager import attach_images_to_articles
+          from affiliate_engine import attach_affiliate_to_articles
+          from database import init_db
+
+          async def run():
+              await init_db()
+              print('Fetching news...')
+              news = await fetch_all_news()
+              print(f'News fetched: {news}')
+              print('Generating articles...')
+              articles = await generate_articles_batch(count=5)
+              print(f'Articles generated: {articles}')
+              print('Attaching images...')
+              await attach_images_to_articles()
+              print('Attaching affiliate...')
+              await attach_affiliate_to_articles()
+              print('Done!')
+
+          asyncio.run(run())
           "
 
-      - name: Upload database artifact
+      - name: Upload database
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: database-backup
           path: backend/news_platform.db
-          retention-days: 7
+          retention-days: 3
 
-      - name: Notify on failure
-        if: failure()
+  facebook-automation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Run every hour
+    if: github.event_name == 'schedule'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
         run: |
-          echo "Automation cycle failed!"
-          echo "Check logs above for details"
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Create .env file
+        run: |
+          cd backend
+          cat > .env << EOF
+          GROQ_API_KEY_1=${{ secrets.GROQ_API_KEY_1 }}
+          GROQ_API_KEY_2=${{ secrets.GROQ_API_KEY_2 }}
+          GROQ_API_KEY_3=${{ secrets.GROQ_API_KEY_3 }}
+          DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
+          MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }}
+          COHERE_API_KEY=${{ secrets.COHERE_API_KEY }}
+          TOGETHER_API_KEY=${{ secrets.TOGETHER_API_KEY }}
+          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+          AMAZON_ASSOCIATE_TAG=sk200709-21
+          FACEBOOK_ACCESS_TOKEN=${{ secrets.FACEBOOK_ACCESS_TOKEN }}
+          FACEBOOK_PAGE_ID=${{ secrets.FACEBOOK_PAGE_ID }}
+          UNSPLASH_ACCESS_KEY=${{ secrets.UNSPLASH_ACCESS_KEY }}
+          PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}
+          APP_URL=${{ secrets.APP_URL }}
+          DATABASE_URL=sqlite:///./news_platform.db
+          DEBUG=False
+          EOF
+
+      - name: Run Facebook Automation
+        run: |
+          cd backend
+          python -c "
+          import asyncio
+          from datetime import datetime
+          from facebook_manager import run_facebook_automation
+          from database import init_db
+
+          async def run():
+              now = datetime.now()
+              hour = now.hour
+              # Only 6AM to 10PM IST
+              if 6 <= hour < 22:
+                  await init_db()
+                  print(f'Running Facebook automation at {hour}:00')
+                  await run_facebook_automation()
+                  print('Facebook automation done!')
+              else:
+                  print(f'Outside active hours: {hour}:00')
+
+          asyncio.run(run())
+          "
