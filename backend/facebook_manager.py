@@ -15,60 +15,164 @@ logger = logging.getLogger(__name__)
 
 FACEBOOK_ACCESS_TOKEN = os.getenv("FACEBOOK_ACCESS_TOKEN")
 FACEBOOK_PAGE_ID = os.getenv("FACEBOOK_PAGE_ID")
-APP_URL = os.getenv("APP_URL", "https://yourwebsite.com")
+APP_URL = os.getenv("APP_URL", "https://news-affiliate-platform.vercel.app")
+WHATSAPP_CHANNEL = "https://www.whatsapp.com/channel/0029VbCy92nBadmau8nw0v3j"
+AMAZON_TAG = "sk200709-21"
+
+# Trending products for Facebook posts
+TRENDING_PRODUCTS = [
+    {
+        "name": "Samsung Galaxy S24 Ultra",
+        "price": "₹1,29,999",
+        "url": f"https://www.amazon.in/s?k=Samsung+Galaxy+S24+Ultra&tag={AMAZON_TAG}",
+        "emoji": "📱"
+    },
+    {
+        "name": "Apple iPhone 15",
+        "price": "₹79,999",
+        "url": f"https://www.amazon.in/s?k=Apple+iPhone+15&tag={AMAZON_TAG}",
+        "emoji": "📱"
+    },
+    {
+        "name": "boAt Airdopes 141",
+        "price": "₹1,299",
+        "url": f"https://www.amazon.in/s?k=boAt+Airdopes+141&tag={AMAZON_TAG}",
+        "emoji": "🎧"
+    },
+    {
+        "name": "Amazon Echo Dot 5th Gen",
+        "price": "₹4,999",
+        "url": f"https://www.amazon.in/s?k=Echo+Dot+5th+Gen&tag={AMAZON_TAG}",
+        "emoji": "🔊"
+    },
+    {
+        "name": "Kindle Paperwhite",
+        "price": "₹13,999",
+        "url": f"https://www.amazon.in/s?k=Kindle+Paperwhite&tag={AMAZON_TAG}",
+        "emoji": "📚"
+    },
+    {
+        "name": "OnePlus Nord CE 3",
+        "price": "₹24,999",
+        "url": f"https://www.amazon.in/s?k=OnePlus+Nord+CE+3&tag={AMAZON_TAG}",
+        "emoji": "📱"
+    },
+    {
+        "name": "Mi Smart Band 8",
+        "price": "₹3,499",
+        "url": f"https://www.amazon.in/s?k=Mi+Smart+Band+8&tag={AMAZON_TAG}",
+        "emoji": "⌚"
+    },
+    {
+        "name": "Philips Air Fryer",
+        "price": "₹7,995",
+        "url": f"https://www.amazon.in/s?k=Philips+Air+Fryer&tag={AMAZON_TAG}",
+        "emoji": "🍳"
+    }
+]
 
 
-async def generate_fb_post_content(
+async def generate_article_fb_post(
     title: str,
     summary: str,
     category: str,
-    hashtags: str,
-    article_url: str
+    article_url: str,
+    hashtags: str
 ) -> str:
-    """Generate engaging Facebook post using AI"""
+    """Generate professional article Facebook post"""
 
     prompt = f"""
-Tum ek social media expert ho. Neeche diye gaye article ke liye 
-ek engaging Facebook post likho.
+You are a professional social media manager for IndiaXpress news platform.
+Create an engaging Facebook post for this news article.
 
 ARTICLE TITLE: {title}
-ARTICLE SUMMARY: {summary}
+SUMMARY: {summary}
 CATEGORY: {category}
 ARTICLE URL: {article_url}
 
-INSTRUCTIONS:
-1. Hindi/Hinglish mein likho
-2. 150-200 words ka post
-3. Engaging aur catchy opening line
-4. 3-4 key points bullet points mein
-5. Call to action (article padhne ke liye)
-6. Emojis use karo (5-8)
-7. End mein hashtags add karo: {hashtags}
-8. Article URL include karo
+REQUIREMENTS:
+1. Write in English (Professional tone)
+2. 150-200 words
+3. Catchy opening line
+4. 3-4 key highlights
+5. Call to action to read full article
+6. 5-6 relevant hashtags
+7. Include article URL
+8. Add WhatsApp channel: {WHATSAPP_CHANNEL}
+9. Use 4-6 emojis
+10. Professional newspaper style
 
-RETURN ONLY THE POST TEXT, no extra explanation.
+RETURN ONLY THE POST TEXT.
 """
 
-    result = await ai_manager.generate(prompt, task_type="facebook_post")
+    result = await ai_manager.generate(prompt, task_type="facebook_article")
 
     if result["success"]:
         return result["content"]
     else:
-        # Fallback simple post
-        return f"""
-🔥 Breaking News! 
+        return f"""📰 Breaking News | IndiaXpress
 
 {title}
 
-{summary}
+{summary[:200]}...
 
-📖 Poora article padhne ke liye link par click karein:
-{article_url}
+🔗 Read Full Story: {article_url}
+
+📲 Join our WhatsApp Channel for instant updates:
+{WHATSAPP_CHANNEL}
 
 {hashtags}
+#IndiaXpress #BreakingNews #India"""
 
-#LatestNews #HindiNews #TrendingNow
+
+async def generate_trending_product_post(product_index: int = 0) -> str:
+    """Generate trending product Facebook post"""
+
+    product = TRENDING_PRODUCTS[product_index % len(TRENDING_PRODUCTS)]
+
+    prompt = f"""
+You are a deal hunter and product reviewer for IndiaXpress.
+Create an engaging Facebook post for this trending Amazon product.
+
+PRODUCT: {product['name']}
+PRICE: {product['price']}
+AMAZON LINK: {product['url']}
+
+REQUIREMENTS:
+1. Write in English
+2. 100-150 words
+3. Highlight why this product is trending
+4. Mention key features (3-4 points)
+5. Create urgency (limited offer feeling)
+6. Include product link
+7. Add WhatsApp channel link: {WHATSAPP_CHANNEL}
+8. 4-5 relevant emojis
+9. 4-5 hashtags
+
+RETURN ONLY THE POST TEXT.
 """
+
+    result = await ai_manager.generate(prompt, task_type="facebook_product")
+
+    if result["success"]:
+        return result["content"]
+    else:
+        return f"""{product['emoji']} Trending Deal Alert! | IndiaXpress
+
+🔥 {product['name']}
+💰 Best Price: {product['price']}
+
+✅ Top rated product
+✅ Fast delivery
+✅ Best value for money
+
+🛒 Buy Now on Amazon:
+{product['url']}
+
+📲 Follow us for more deals:
+{WHATSAPP_CHANNEL}
+
+#TrendingDeals #Amazon #IndiaXpress #BestPrice #Shopping"""
 
 
 async def generate_news_fb_post(
@@ -77,36 +181,36 @@ async def generate_news_fb_post(
     category: str,
     news_url: str
 ) -> str:
-    """Generate Facebook post for raw news"""
+    """Generate professional news update post"""
 
     prompt = f"""
-Tum ek news social media manager ho. Is breaking news ke liye 
-ek short engaging Facebook post likho.
+You are a news editor at IndiaXpress.
+Create a breaking news Facebook post.
 
 NEWS: {news_title}
-DESCRIPTION: {news_description}
+DESCRIPTION: {news_description[:300]}
 CATEGORY: {category}
-SOURCE URL: {news_url}
+SOURCE: {news_url}
 
-INSTRUCTIONS:
-1. Hindi/Hinglish mein likho
+REQUIREMENTS:
+1. Write in English (Professional)
 2. 100-150 words
-3. Breaking news feel do
-4. Important points highlight karo
-5. 4-6 emojis use karo
-6. Relevant hashtags add karo (5-6)
-7. Source link include karo
+3. Breaking news style
+4. Key facts highlighted
+5. Source link included
+6. WhatsApp channel: {WHATSAPP_CHANNEL}
+7. 4-5 emojis
+8. 5-6 hashtags
 
 RETURN ONLY THE POST TEXT.
 """
 
-    result = await ai_manager.generate(prompt, task_type="news_fb_post")
+    result = await ai_manager.generate(prompt, task_type="facebook_news")
 
     if result["success"]:
         return result["content"]
     else:
-        return f"""
-🚨 Breaking News!
+        return f"""🚨 Breaking News | IndiaXpress
 
 {news_title}
 
@@ -114,25 +218,26 @@ RETURN ONLY THE POST TEXT.
 
 🔗 Source: {news_url}
 
-#BreakingNews #HindiNews #{category.title()}News
-"""
+📲 Stay Updated - Join WhatsApp:
+{WHATSAPP_CHANNEL}
+
+#{category.title()}News #IndiaXpress #Breaking"""
 
 
-async def post_to_facebook_with_image(
+async def post_to_facebook(
     message: str,
     image_url: str = None
 ) -> dict:
-    """Post to Facebook Page with optional image"""
+    """Post to Facebook Page"""
 
     if not FACEBOOK_ACCESS_TOKEN or not FACEBOOK_PAGE_ID:
-        logger.error("Facebook credentials not configured!")
+        logger.error("Facebook credentials missing!")
         return {"success": False, "error": "Credentials missing"}
 
     try:
         async with httpx.AsyncClient(timeout=30) as client:
 
             if image_url:
-                # Post with image
                 response = await client.post(
                     f"https://graph.facebook.com/v18.0/{FACEBOOK_PAGE_ID}/photos",
                     data={
@@ -142,7 +247,6 @@ async def post_to_facebook_with_image(
                     }
                 )
             else:
-                # Text only post
                 response = await client.post(
                     f"https://graph.facebook.com/v18.0/{FACEBOOK_PAGE_ID}/feed",
                     data={
@@ -156,15 +260,9 @@ async def post_to_facebook_with_image(
 
             if "id" in data:
                 logger.info(f"Facebook post successful! ID: {data['id']}")
-                return {
-                    "success": True,
-                    "post_id": data["id"]
-                }
+                return {"success": True, "post_id": data["id"]}
             else:
-                return {
-                    "success": False,
-                    "error": str(data)
-                }
+                return {"success": False, "error": str(data)}
 
     except httpx.HTTPStatusError as e:
         error_msg = f"Facebook API error: {e.response.text}"
@@ -177,17 +275,16 @@ async def post_to_facebook_with_image(
 
 
 async def save_fb_post(
-    article_id: int = None,
-    post_type: str = "article",
-    content: str = "",
-    image_url: str = None,
-    hashtags: str = "",
-    fb_post_id: str = None,
-    success: bool = True,
-    error: str = None
+    article_id=None,
+    post_type="article",
+    content="",
+    image_url=None,
+    hashtags="",
+    fb_post_id=None,
+    success=True,
+    error=None
 ):
-    """Save Facebook post record to database"""
-
+    """Save Facebook post to database"""
     async with AsyncSessionLocal() as session:
         try:
             fb_post = FacebookPost(
@@ -203,32 +300,27 @@ async def save_fb_post(
             )
             session.add(fb_post)
             await session.commit()
-
         except Exception as e:
             await session.rollback()
             logger.error(f"Error saving FB post: {e}")
 
 
 async def post_article_to_facebook(article_id: int) -> bool:
-    """Post a published article to Facebook"""
+    """Post article to Facebook"""
 
     async with AsyncSessionLocal() as session:
         try:
-            # Get article
             result = await session.execute(
                 select(Article).where(Article.id == article_id)
             )
             article = result.scalar_one_or_none()
 
             if not article:
-                logger.error(f"Article {article_id} not found!")
                 return False
 
             if article.is_facebook_posted:
-                logger.info(f"Article {article_id} already posted!")
                 return True
 
-            # Get category
             category_name = "General"
             if article.category_id:
                 cat_result = await session.execute(
@@ -240,25 +332,21 @@ async def post_article_to_facebook(article_id: int) -> bool:
                 if category:
                     category_name = category.name
 
-            # Generate article URL
-            article_url = f"{APP_URL}/article/{article.slug}"
+            article_url = f"{APP_URL}/article.html?slug={article.slug}"
 
-            # Generate FB post content
-            post_content = await generate_fb_post_content(
+            post_content = await generate_article_fb_post(
                 title=article.title,
                 summary=article.summary or "",
                 category=category_name,
-                hashtags=article.hashtags or "",
-                article_url=article_url
+                article_url=article_url,
+                hashtags=article.hashtags or ""
             )
 
-            # Post to Facebook
-            fb_result = await post_to_facebook_with_image(
+            fb_result = await post_to_facebook(
                 message=post_content,
                 image_url=article.featured_image
             )
 
-            # Save to database
             await save_fb_post(
                 article_id=article_id,
                 post_type="article",
@@ -271,21 +359,53 @@ async def post_article_to_facebook(article_id: int) -> bool:
             )
 
             if fb_result["success"]:
-                # Mark article as posted
                 article.is_facebook_posted = True
                 await session.commit()
-                logger.info(
-                    f"Article posted to Facebook: {article.title[:50]}"
-                )
+                logger.info(f"Article posted to Facebook: {article.title[:50]}")
                 return True
-            else:
-                await session.commit()
-                return False
+
+            await session.commit()
+            return False
 
         except Exception as e:
             await session.rollback()
-            logger.error(f"Error posting article to Facebook: {e}")
+            logger.error(f"Error posting article: {e}")
             return False
+
+
+async def post_trending_product_to_facebook() -> bool:
+    """Post trending product to Facebook"""
+    try:
+        # Rotate products based on hour
+        product_index = datetime.now().hour % len(TRENDING_PRODUCTS)
+
+        post_content = await generate_trending_product_post(product_index)
+
+        product = TRENDING_PRODUCTS[product_index]
+
+        fb_result = await post_to_facebook(
+            message=post_content
+        )
+
+        await save_fb_post(
+            post_type="product",
+            content=post_content,
+            fb_post_id=fb_result.get("post_id"),
+            success=fb_result["success"],
+            error=fb_result.get("error")
+        )
+
+        if fb_result["success"]:
+            logger.info(
+                f"Product posted to Facebook: {product['name']}"
+            )
+            return True
+
+        return False
+
+    except Exception as e:
+        logger.error(f"Error posting product: {e}")
+        return False
 
 
 async def post_news_to_facebook(news_id: int) -> bool:
@@ -301,7 +421,6 @@ async def post_news_to_facebook(news_id: int) -> bool:
             if not news:
                 return False
 
-            # Get category
             category_name = "General"
             if news.category_id:
                 cat_result = await session.execute(
@@ -313,7 +432,6 @@ async def post_news_to_facebook(news_id: int) -> bool:
                 if category:
                     category_name = category.name
 
-            # Generate FB post
             post_content = await generate_news_fb_post(
                 news_title=news.title,
                 news_description=news.description or "",
@@ -321,12 +439,10 @@ async def post_news_to_facebook(news_id: int) -> bool:
                 news_url=news.url
             )
 
-            # Post to Facebook
-            fb_result = await post_to_facebook_with_image(
+            fb_result = await post_to_facebook(
                 message=post_content
             )
 
-            # Save record
             await save_fb_post(
                 post_type="news",
                 content=post_content,
@@ -338,59 +454,67 @@ async def post_news_to_facebook(news_id: int) -> bool:
             return fb_result["success"]
 
         except Exception as e:
-            logger.error(f"Error posting news to Facebook: {e}")
+            logger.error(f"Error posting news: {e}")
             return False
 
 
 async def run_facebook_automation():
     """
-    Main automation function:
-    1. Post unpublished articles to Facebook
-    2. Post latest news to Facebook
+    Main Facebook automation:
+    1. Post unpublished articles (with image)
+    2. Post trending product
+    3. Post latest news updates
     """
     logger.info("Starting Facebook automation...")
 
-    # Post articles
+    posted_articles = 0
+    posted_news = 0
+
+    # 1. Post articles
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(Article).where(
                 Article.is_published == True,
                 Article.is_facebook_posted == False
-            ).limit(5)
+            ).order_by(
+                Article.published_at.desc()
+            ).limit(3)
         )
         articles = result.scalars().all()
 
         for article in articles:
-            await asyncio.sleep(3)
+            await asyncio.sleep(5)
             success = await post_article_to_facebook(article.id)
             if success:
-                logger.info(
-                    f"✅ Article posted: {article.title[:50]}"
-                )
-            else:
-                logger.warning(
-                    f"❌ Failed to post: {article.title[:50]}"
-                )
+                posted_articles += 1
+                logger.info(f"✅ Article: {article.title[:50]}")
 
-    # Post news
+    # 2. Post trending product (every other hour)
+    if datetime.now().minute < 30:
+        await asyncio.sleep(5)
+        product_success = await post_trending_product_to_facebook()
+        if product_success:
+            logger.info("✅ Trending product posted!")
+
+    # 3. Post news updates
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(RawNews).where(
                 RawNews.is_processed == False
             ).order_by(
                 RawNews.fetched_at.desc()
-            ).limit(10)
+            ).limit(3)
         )
         news_list = result.scalars().all()
 
-        posted_count = 0
         for news in news_list:
-            if posted_count >= 5:
-                break
-            await asyncio.sleep(3)
+            await asyncio.sleep(5)
             success = await post_news_to_facebook(news.id)
             if success:
-                posted_count += 1
-                logger.info(f"✅ News posted: {news.title[:50]}")
+                posted_news += 1
+                logger.info(f"✅ News: {news.title[:50]}")
 
-    logger.info("Facebook automation complete!")
+    logger.info(
+        f"Facebook done! Articles: {posted_articles}, "
+        f"News: {posted_news}"
+    )
