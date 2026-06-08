@@ -79,50 +79,102 @@ async def generate_article_fb_post(
     article_url: str,
     hashtags: str
 ) -> str:
-    """Generate professional article Facebook post"""
+    """Facebook post - only with website + WhatsApp + product links"""
 
-    prompt = f"""
-You are a professional social media manager for IndiaXpress news platform.
-Create an engaging Facebook post for this news article.
+    import random
+    product = random.choice(TRENDING_PRODUCTS)
 
-ARTICLE TITLE: {title}
-SUMMARY: {summary}
-CATEGORY: {category}
-ARTICLE URL: {article_url}
+    post = f"""🔥 {title}
 
-REQUIREMENTS:
-1. Write in English (Professional tone)
-2. 150-200 words
-3. Catchy opening line
-4. 3-4 key highlights
-5. Call to action to read full article
-6. 5-6 relevant hashtags
-7. Include article URL
-8. Add WhatsApp channel: {WHATSAPP_CHANNEL}
-9. Use 4-6 emojis
-10. Professional newspaper style
+{summary[:180]}...
 
-RETURN ONLY THE POST TEXT.
-"""
+━━━━━━━━━━━━━━━━━━
+🛒 TRENDING PRODUCT
 
-    result = await ai_manager.generate(prompt, task_type="facebook_article")
+{product['emoji']} {product['name']}
+💰 Best Price: {product['price']}
 
-    if result["success"]:
-        return result["content"]
-    else:
-        return f"""📰 Breaking News | IndiaXpress
+👉 BUY NOW: {product['url']}
 
-{title}
+━━━━━━━━━━━━━━━━━━
 
-{summary[:200]}...
+📖 READ FULL ARTICLE on IndiaXpress:
+{article_url}
 
-🔗 Read Full Story: {article_url}
-
-📲 Join our WhatsApp Channel for instant updates:
+📱 FOLLOW OUR WHATSAPP CHANNEL:
 {WHATSAPP_CHANNEL}
 
+Join for instant news & deals!
+
 {hashtags}
-#IndiaXpress #BreakingNews #India"""
+#IndiaXpress #News #{category.title()}
+"""
+    return post
+
+
+async def generate_news_fb_post(
+    news_title: str,
+    news_description: str,
+    category: str
+) -> str:
+    """Facebook news post - website + WhatsApp links only"""
+
+    import random
+    product = random.choice(TRENDING_PRODUCTS)
+
+    post = f"""⚡ BREAKING NEWS
+
+{news_title}
+
+{news_description[:150]}...
+
+━━━━━━━━━━━━━━━━━━
+💰 DEAL OF THE DAY
+
+{product['emoji']} {product['name']}
+Price: {product['price']}
+
+👉 SHOP: {product['url']}
+
+━━━━━━━━━━━━━━━━━━
+
+📱 MORE NEWS:
+{WHATSAPP_CHANNEL}
+
+Stay updated with IndiaXpress!
+
+#Breaking #India #News #{category.title()}
+"""
+    return post
+
+
+async def generate_trending_product_post(product_index: int = 0) -> str:
+    """Product post - WhatsApp + website links"""
+
+    product = TRENDING_PRODUCTS[product_index % len(TRENDING_PRODUCTS)]
+
+    post = f"""🔥 DEAL ALERT! {product['emoji']}
+
+{product['name']}
+
+💰 BEST PRICE: {product['price']}
+
+⭐ Top Rated
+⭐ Fast Delivery  
+⭐ Best Value
+
+👉 BUY NOW: {product['url']}
+
+━━━━━━━━━━━━━━━━━━
+
+📱 Join Our WhatsApp for more deals:
+{WHATSAPP_CHANNEL}
+
+Follow IndiaXpress for daily deals!
+
+#Shopping #Deal #BestPrice #IndiaXpress
+"""
+    return post
 
 
 async def generate_trending_product_post(product_index: int = 0) -> str:
