@@ -398,17 +398,47 @@ function initSettingsLanguage() {
     }
 }
 
-// Override updateUILanguage to also update any dynamic text
-// (already defined in config.js, but we ensure it's called on language change)
+// ========================================
+// LANGUAGE CHANGE HANDLER (No Page Reload)
+// ========================================
+// We override the config.js updateUILanguage to also refresh dynamic content
+// but WITHOUT reloading the page (to avoid infinite loop)
 window.updateUILanguage = function() {
-    // This function is defined in config.js, we just call it again if needed
-    if (typeof window._updateUILanguage === 'function') {
-        window._updateUILanguage();
+    // First, call the original updateUILanguage from config.js if it exists
+    // (we need to store the original reference)
+    if (typeof window._originalUpdateUILanguage === 'undefined') {
+        // Store original if not already stored
+        if (typeof window._originalUpdateUILanguage === 'undefined' && typeof updateUILanguage !== 'undefined') {
+            window._originalUpdateUILanguage = updateUILanguage;
+        }
     }
-    // Also re-render categories and trending to reflect new language?
-    // For simplicity, we reload the page after language change? 
-    // But better to just reload articles? We'll keep simple: reload page
-    location.reload();
+    if (window._originalUpdateUILanguage) {
+        window._originalUpdateUILanguage();
+    }
+    
+    // Now refresh dynamic sections that contain static text (like trending, categories, deals)
+    // This will update the UI without reloading the page
+    fetchTrending();      // Refresh trending posts (their titles remain same, but UI text like "views" will be updated via translation function)
+    fetchCategories();    // Refresh categories (names are fetched from API, but they might already be translated on backend)
+    // Note: The API returns category names in English only; for full translation, you'd need backend support.
+    // For now, just updating UI text elements with data-i18n attributes is enough.
+    
+    // Also re-render top deals (they have static text)
+    renderTopDeals();
+    
+    // Re-apply any missing translations on dynamic elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (key && t(key)) {
+            el.textContent = t(key);
+        }
+    });
+    
+    // Update search placeholder
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.placeholder = t('search_placeholder');
+    }
 };
 
 // ========================================
@@ -427,6 +457,10 @@ async function initPage() {
     // Initialize settings menu and language dropdown inside settings
     initSettingsMenu();
     initSettingsLanguage();
+    
+    // Ensure the global updateUILanguage is the one we defined (no reload)
+    // and also ensure no conflict with config.js's DOMContentLoaded listener.
+    // config.js already calls updateUILanguage on load, which will use our override.
 }
 
 // Start
