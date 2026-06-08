@@ -23,60 +23,61 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <style>
-    /* Language Selector Fixed */
-    .article-lang-selector {
+    /* Fixed Language Selector for Article Page */
+    .article-lang-fixed {
         position: fixed;
-        top: 20px;
+        top: 80px;
         right: 20px;
-        z-index: 1000;
+        z-index: 9999;
         background: var(--bg-card);
-        padding: 8px;
+        padding: 8px 12px;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         border: 1px solid var(--border);
     }
 
-    .article-lang-selector .lang-btn {
+    .article-lang-btn {
         background: var(--primary);
         color: white;
         border: none;
-        padding: 8px 12px;
+        padding: 8px 16px;
         border-radius: 8px;
         cursor: pointer;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         display: flex;
         align-items: center;
         gap: 6px;
         transition: all 0.3s;
     }
 
-    .article-lang-selector .lang-btn:hover {
+    .article-lang-btn:hover {
         opacity: 0.9;
-        transform: scale(1.05);
+        transform: scale(1.02);
     }
 
-    .article-lang-selector .lang-dropdown {
+    .article-lang-dropdown {
         display: none;
         position: absolute;
-        top: 110%;
+        top: 100%;
         right: 0;
+        margin-top: 8px;
         background: var(--bg-card);
-        border: 1px solid var(--border);
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        min-width: 160px;
+        min-width: 150px;
         overflow: hidden;
-        margin-top: 4px;
+        z-index: 10000;
     }
 
-    .article-lang-selector .lang-dropdown.show {
+    .article-lang-dropdown.show {
         display: block;
     }
 
-    .article-lang-selector .lang-option {
-        padding: 10px 12px;
+    .article-lang-option {
+        padding: 10px 15px;
         cursor: pointer;
+        border-bottom: 1px solid var(--border);
         font-size: 0.85rem;
         transition: all 0.2s;
         display: flex;
@@ -84,34 +85,38 @@
         gap: 6px;
     }
 
-    .article-lang-selector .lang-option:hover {
+    .article-lang-option:hover {
         background: var(--bg);
     }
 
-    .article-lang-selector .lang-option.active {
+    .article-lang-option.active {
         color: var(--primary);
         font-weight: 600;
         background: rgba(255,107,53,0.08);
     }
 
-    .article-lang-selector .lang-option small {
-        color: var(--text-light);
-        font-size: 0.75rem;
-        margin-left: auto;
-    }
-
     @media (max-width: 768px) {
-        .article-lang-selector {
-            top: 80px;
+        .article-lang-fixed {
+            top: 70px;
             right: 10px;
+            padding: 5px 8px;
+        }
+        .article-lang-btn {
+            padding: 6px 12px;
+            font-size: 0.75rem;
         }
     }
     </style>
 </head>
 <body>
 
-<!-- Language Selector (Top Right) -->
-<div class="article-lang-selector" id="articleLangSelector"></div>
+<!-- Fixed Language Selector (Always Visible) -->
+<div class="article-lang-fixed" id="articleLangFixed">
+    <button class="article-lang-btn" id="articleLangBtn">
+        🌐 Language <i class="fas fa-chevron-down"></i>
+    </button>
+    <div class="article-lang-dropdown" id="articleLangDropdown"></div>
+</div>
 
 <!-- Header -->
 <header class="header" id="header">
@@ -281,11 +286,53 @@
 <script src="js/config.js"></script>
 <script src="js/article.js"></script>
 <script>
-// Initialize language selector on article page
-document.addEventListener('DOMContentLoaded', () => {
-    const langContainer = document.getElementById('articleLangSelector');
-    if (langContainer) {
-        langContainer.innerHTML = createLanguageSelector('article');
+// Initialize language selector for article page
+document.addEventListener('DOMContentLoaded', function() {
+    // Populate language dropdown
+    const dropdown = document.getElementById('articleLangDropdown');
+    if (dropdown && typeof CONFIG !== 'undefined') {
+        const langs = CONFIG.LANGUAGES;
+        let currentLang = localStorage.getItem('article_language') || 'en';
+        dropdown.innerHTML = Object.entries(langs).map(([code, lang]) => `
+            <div class="article-lang-option" data-lang="${code}" data-name="${lang.name}">
+                ${lang.flag} ${lang.native}
+            </div>
+        `).join('');
+        
+        // Add click handlers to options
+        document.querySelectorAll('.article-lang-option').forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const langCode = this.dataset.lang;
+                localStorage.setItem('article_language', langCode);
+                // Reload article in new language
+                if (typeof fetchArticle === 'function') {
+                    fetchArticle(); // Reload with new language
+                } else {
+                    location.reload();
+                }
+            });
+        });
+        
+        // Highlight current language
+        document.querySelectorAll('.article-lang-option').forEach(opt => {
+            if (opt.dataset.lang === currentLang) {
+                opt.classList.add('active');
+            }
+        });
+    }
+    
+    // Toggle dropdown
+    const langBtn = document.getElementById('articleLangBtn');
+    const langDropdown = document.getElementById('articleLangDropdown');
+    if (langBtn && langDropdown) {
+        langBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            langDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', function() {
+            langDropdown.classList.remove('show');
+        });
     }
 });
 </script>
