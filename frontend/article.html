@@ -1,31 +1,117 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Article - LootBazaar News</title>
+    <title id="pageTitle">Article - IndiaXpress</title>
     <meta name="description" id="metaDescription" content="">
     <meta name="keywords" id="metaKeywords" content="">
-
     <!-- Open Graph -->
     <meta property="og:title" id="ogTitle" content="">
     <meta property="og:description" id="ogDescription" content="">
     <meta property="og:image" id="ogImage" content="">
     <meta property="og:type" content="article">
-
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" id="twitterTitle" content="">
     <meta name="twitter:description" id="twitterDesc" content="">
     <meta name="twitter:image" id="twitterImage" content="">
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/article.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+    /* Language Selector Fixed */
+    .article-lang-selector {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: var(--bg-card);
+        padding: 8px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border: 1px solid var(--border);
+    }
+
+    .article-lang-selector .lang-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+    .article-lang-selector .lang-btn:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+    }
+
+    .article-lang-selector .lang-dropdown {
+        display: none;
+        position: absolute;
+        top: 110%;
+        right: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        min-width: 160px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+
+    .article-lang-selector .lang-dropdown.show {
+        display: block;
+    }
+
+    .article-lang-selector .lang-option {
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .article-lang-selector .lang-option:hover {
+        background: var(--bg);
+    }
+
+    .article-lang-selector .lang-option.active {
+        color: var(--primary);
+        font-weight: 600;
+        background: rgba(255,107,53,0.08);
+    }
+
+    .article-lang-selector .lang-option small {
+        color: var(--text-light);
+        font-size: 0.75rem;
+        margin-left: auto;
+    }
+
+    @media (max-width: 768px) {
+        .article-lang-selector {
+            top: 80px;
+            right: 10px;
+        }
+    }
+    </style>
 </head>
 <body>
+
+<!-- Language Selector (Top Right) -->
+<div class="article-lang-selector" id="articleLangSelector"></div>
 
 <!-- Header -->
 <header class="header" id="header">
@@ -33,11 +119,19 @@
         <div class="header-top">
             <div class="logo">
                 <a href="index.html">
-                    <span class="logo-icon">🔥</span>
-                    <span class="logo-text">LootBazaar <span>News</span></span>
+                    <span class="logo-icon">📰</span>
+                    <span class="logo-text">India<span>Xpress</span></span>
                 </a>
             </div>
             <div class="header-actions">
+                <!-- WhatsApp -->
+                <a href="https://www.whatsapp.com/channel/0029VbCy92nBadmau8nw0v3j"
+                   target="_blank"
+                   class="whatsapp-btn"
+                   title="Join WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+
                 <button class="theme-toggle" id="themeToggle">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -47,7 +141,7 @@
             </div>
         </div>
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="News search karein...">
+            <input type="text" id="searchInput" placeholder="Search news...">
             <button onclick="searchNews()">
                 <i class="fas fa-search"></i>
             </button>
@@ -70,7 +164,6 @@
 <!-- Main Content -->
 <main class="main-content">
     <div class="container">
-
         <!-- Breadcrumb -->
         <div class="breadcrumb" id="breadcrumb">
             <a href="index.html">🏠 Home</a>
@@ -79,9 +172,7 @@
             <span>›</span>
             <span id="breadcrumbTitle">Article</span>
         </div>
-
         <div class="article-layout">
-
             <!-- Article Content -->
             <article class="article-main" id="articleContent">
                 <!-- Loading skeleton -->
@@ -94,13 +185,26 @@
                     <div class="skeleton-line short"></div>
                 </div>
             </article>
-
             <!-- Sidebar -->
             <aside class="article-sidebar">
+                <!-- WhatsApp Widget -->
+                <div class="sidebar-widget" style="background:linear-gradient(135deg,#25d366,#128c7e);color:white;text-align:center">
+                    <h3 style="color:white;border-bottom-color:rgba(255,255,255,0.3);margin-bottom:12px" class="widget-title">
+                        <i class="fab fa-whatsapp"></i> WhatsApp Channel
+                    </h3>
+                    <p style="font-size:0.9rem;margin-bottom:16px;opacity:0.9">
+                        Join our WhatsApp channel for instant news alerts!
+                    </p>
+                    <a href="https://www.whatsapp.com/channel/0029VbCy92nBadmau8nw0v3j"
+                       target="_blank"
+                       style="display:block;background:white;color:#25d366;padding:10px;border-radius:8px;font-weight:700;text-decoration:none">
+                        <i class="fab fa-whatsapp"></i> Join Now - Free!
+                    </a>
+                </div>
 
                 <!-- Share Widget -->
                 <div class="sidebar-widget">
-                    <h3 class="widget-title">📤 Share Karein</h3>
+                    <h3 class="widget-title">📤 Share</h3>
                     <div class="share-buttons" id="shareButtons">
                         <button class="share-btn whatsapp" onclick="shareWhatsApp()">
                             <i class="fab fa-whatsapp"></i> WhatsApp
@@ -116,19 +220,16 @@
                         </button>
                     </div>
                 </div>
-
                 <!-- Trending Widget -->
                 <div class="sidebar-widget">
                     <h3 class="widget-title">🔥 Trending</h3>
                     <div id="trendingPosts"></div>
                 </div>
-
                 <!-- Affiliate Widget -->
                 <div class="sidebar-widget">
                     <h3 class="widget-title">🛒 Top Deals</h3>
                     <div id="sidebarDeals"></div>
                 </div>
-
             </aside>
         </div>
     </div>
@@ -139,8 +240,13 @@
     <div class="container">
         <div class="footer-grid">
             <div class="footer-about">
-                <h3>🔥 LootBazaar News</h3>
-                <p>Latest Hindi/Hinglish news - Technology, Sports, Business aur bahut kuch!</p>
+                <h3>📰 IndiaXpress</h3>
+                <p>India's Premier News Platform - English, Hindi, Telugu, Tamil, Bengali, Marathi</p>
+                <a href="https://www.whatsapp.com/channel/0029VbCy92nBadmau8nw0v3j"
+                   target="_blank"
+                   style="display:inline-flex;align-items:center;gap:6px;background:#25d366;color:white;padding:8px 16px;border-radius:8px;margin-top:12px;font-weight:600;font-size:0.85rem;text-decoration:none">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Channel
+                </a>
             </div>
             <div class="footer-links">
                 <h4>Pages</h4>
@@ -158,11 +264,13 @@
                     <li><a href="category.html?cat=sports">Sports</a></li>
                     <li><a href="category.html?cat=business">Business</a></li>
                     <li><a href="category.html?cat=entertainment">Entertainment</a></li>
+                    <li><a href="category.html?cat=india">India</a></li>
+                    <li><a href="category.html?cat=world">World</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2024 LootBazaar News. All rights reserved.</p>
+            <p>© 2024 IndiaXpress. All rights reserved.</p>
             <p class="affiliate-disclaimer">
                 * Affiliate links included. Purchases may earn us commission.
             </p>
@@ -172,5 +280,14 @@
 
 <script src="js/config.js"></script>
 <script src="js/article.js"></script>
+<script>
+// Initialize language selector on article page
+document.addEventListener('DOMContentLoaded', () => {
+    const langContainer = document.getElementById('articleLangSelector');
+    if (langContainer) {
+        langContainer.innerHTML = createLanguageSelector('article');
+    }
+});
+</script>
 </body>
 </html>
