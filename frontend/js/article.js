@@ -581,12 +581,16 @@ function initArticleLanguageSelector() {
             if (typeof setSiteLanguage === 'function') {
                 setSiteLanguage(newLang);
             }
-            // Reload article to reflect new language (backend will need to support? For now just refresh)
-            // To actually change content, we would need a translation API. For UI text, we can update.
-            // Reload the page to fetch article with new lang parameter (backend must support)
-            const url = new URL(window.location.href);
-            url.searchParams.set('lang', newLang);
-            window.location.href = url.toString();
+            // Update UI language
+            if (typeof updateUILanguage === 'function') {
+                updateUILanguage();
+            }
+            // Re-fetch article with new language
+            if (typeof fetchArticle === 'function') {
+                fetchArticle();
+            }
+            // Close dropdown
+            langDropdown.classList.remove('show');
         });
     });
 
