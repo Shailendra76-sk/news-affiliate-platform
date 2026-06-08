@@ -574,6 +574,228 @@ img {
 }
 
 /* ========================================
+   LANGUAGE SELECTOR & SETTINGS MENU
+======================================== */
+.lang-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.lang-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+}
+
+.lang-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.lang-dropdown {
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    z-index: 999;
+    min-width: 160px;
+    overflow: hidden;
+}
+
+.lang-dropdown.show {
+    display: block;
+}
+
+.lang-option {
+    padding: 10px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.lang-option:hover {
+    background: var(--bg);
+}
+
+.lang-option.active {
+    color: var(--primary);
+    font-weight: 600;
+    background: rgba(255,107,53,0.08);
+}
+
+.lang-option small {
+    color: var(--text-light);
+    font-size: 0.75rem;
+    margin-left: auto;
+}
+
+/* WhatsApp Button (Round) */
+.whatsapp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #25d366;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.whatsapp-btn:hover {
+    background: #128c7e;
+    transform: scale(1.05);
+}
+
+/* Settings Menu (3 dots) */
+.settings-container {
+    position: relative;
+    display: inline-block;
+}
+
+.settings-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text);
+    padding: 8px;
+    border-radius: 8px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+}
+
+.settings-btn:hover {
+    background: var(--bg);
+    color: var(--primary);
+}
+
+.settings-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    min-width: 200px;
+    z-index: 1000;
+    margin-top: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.settings-menu.show {
+    display: block;
+}
+
+.settings-title {
+    padding: 12px 16px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+
+.settings-option {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-option:last-child {
+    border-bottom: none;
+}
+
+.settings-option label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+/* ========================================
+   ARTICLE PAGE FIXED LANGUAGE SELECTOR
+======================================== */
+.article-lang-fixed {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: var(--bg-card);
+    padding: 8px 12px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.article-lang-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.article-lang-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    min-width: 150px;
+    overflow: hidden;
+    z-index: 10000;
+}
+
+.article-lang-dropdown.show {
+    display: block;
+}
+
+.article-lang-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.article-lang-option:hover {
+    background: var(--bg);
+}
+
+.article-lang-option.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* ========================================
    SKELETON LOADER
 ======================================== */
 .skeleton-loader {
@@ -694,6 +916,17 @@ img {
 
     .navbar.open {
         display: block;
+    }
+    
+    .article-lang-fixed {
+        top: 10px;
+        right: 10px;
+        padding: 5px 8px;
+    }
+    
+    .article-lang-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
     }
 }
 
