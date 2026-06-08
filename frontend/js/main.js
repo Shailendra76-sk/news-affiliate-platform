@@ -1,5 +1,5 @@
 // ========================================
-// MAIN.JS - Home Page
+// MAIN.JS - Home Page (Updated with Settings Menu & Language Selector)
 // ========================================
 
 let currentPage = 1;
@@ -330,15 +330,15 @@ function openArticle(slug) {
     window.location.href = `article.html?slug=${slug}`;
 }
 
-function filterByCategory(category) {
+function filterByCategory(category, btn) {
     currentCategory = category;
     currentPage = 1;
 
     // Update active button
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
+    document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
     });
-    event.target.classList.add('active');
+    btn.classList.add('active');
 
     fetchArticles(1, category);
 }
@@ -369,6 +369,49 @@ function showError(message) {
 
 
 // ========================================
+// SETTINGS MENU & LANGUAGE SELECTOR
+// ========================================
+
+function initSettingsMenu() {
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsMenu = document.getElementById('settingsMenu');
+    if (!settingsBtn || !settingsMenu) return;
+
+    settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsMenu.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!settingsBtn.contains(e.target) && !settingsMenu.contains(e.target)) {
+            settingsMenu.classList.remove('show');
+        }
+    });
+}
+
+function initSettingsLanguage() {
+    const container = document.getElementById('settingsLangDropdown');
+    if (!container) return;
+    // Use same createLanguageSelector from config.js
+    if (typeof createLanguageSelector === 'function') {
+        container.innerHTML = createLanguageSelector('site');
+    }
+}
+
+// Override updateUILanguage to also update any dynamic text
+// (already defined in config.js, but we ensure it's called on language change)
+window.updateUILanguage = function() {
+    // This function is defined in config.js, we just call it again if needed
+    if (typeof window._updateUILanguage === 'function') {
+        window._updateUILanguage();
+    }
+    // Also re-render categories and trending to reflect new language?
+    // For simplicity, we reload the page after language change? 
+    // But better to just reload articles? We'll keep simple: reload page
+    location.reload();
+};
+
+// ========================================
 // INIT
 // ========================================
 
@@ -380,6 +423,10 @@ async function initPage() {
         loadNewsTicker()
     ]);
     renderTopDeals();
+    
+    // Initialize settings menu and language dropdown inside settings
+    initSettingsMenu();
+    initSettingsLanguage();
 }
 
 // Start
