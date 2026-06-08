@@ -1,5 +1,5 @@
 // ========================================
-// ARTICLE.JS - Article Detail Page
+// ARTICLE.JS - Article Detail Page (with Language Support)
 // ========================================
 
 let currentArticle = null;
@@ -18,9 +18,10 @@ async function fetchArticle() {
     }
 
     try {
-        const response = await fetch(
-            `${CONFIG.API_URL}/api/articles/${slug}`
-        );
+        // Add language parameter for future backend translation
+        const articleLang = localStorage.getItem('article_language') || CONFIG.DEFAULT_LANGUAGE;
+        const url = `${CONFIG.API_URL}/api/articles/${slug}?lang=${articleLang}`;
+        const response = await fetch(url);
         const data = await response.json();
 
         if (data.success) {
@@ -125,6 +126,11 @@ function renderArticle(article) {
 
     // Init FAQ accordion
     initFAQAccordion();
+    
+    // Update UI text based on current language
+    if (typeof updateUILanguage === 'function') {
+        updateUILanguage();
+    }
 }
 
 
@@ -185,7 +191,7 @@ function renderAffiliateProducts(products) {
     return `
         <div class="affiliate-section">
             <h3 class="affiliate-section-title">
-                🛒 Isse Bhi Dekho - Top Products
+                🛒 ${t('top_deals')}
             </h3>
             <div class="affiliate-products-grid">
                 ${products.slice(0, 6).map(product => `
@@ -204,7 +210,7 @@ function renderAffiliateProducts(products) {
                            target="_blank"
                            class="affiliate-buy-btn"
                            onclick="trackProductClick(${product.id})">
-                            🛒 Amazon Par Dekho
+                            🛒 ${t('buy_now')}
                         </a>
                     </div>
                 `).join('')}
@@ -223,7 +229,7 @@ function renderFAQ(faqs) {
 
     return `
         <div class="faq-section">
-            <h2 class="faq-title">❓ Aksar Pooche Jaane Wale Sawaal</h2>
+            <h2 class="faq-title">❓ ${t('faq')}</h2>
             ${faqs.map((faq, index) => `
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFAQ(${index})">
@@ -302,7 +308,7 @@ function renderRelatedArticles(articles) {
 
     return `
         <div class="related-section">
-            <h2 class="related-title">📰 Related Articles</h2>
+            <h2 class="related-title">📰 ${t('related')}</h2>
             <div class="related-grid">
                 ${articles.map(article => `
                     <div class="related-card"
@@ -333,8 +339,8 @@ function renderRelatedArticles(articles) {
 function updateMetaTags(article) {
     const image = article.featured_image || CONFIG.DEFAULT_IMAGE;
 
-    // Title
-    document.title = `${article.title} - LootBazaar News`;
+    // Title - changed to IndiaXpress
+    document.title = `${article.title} - IndiaXpress`;
     setMeta('pageTitle', article.title);
 
     // Meta
@@ -445,7 +451,7 @@ async function fetchTrending() {
                         <div>
                             <div class="trending-title">${a.title}</div>
                             <small style="color:var(--text-light)">
-                                👁️ ${formatNumber(a.views)}
+                                👁️ ${formatNumber(a.views)} ${t('views')}
                             </small>
                         </div>
                     </div>
@@ -498,7 +504,7 @@ function renderSidebarDeals() {
             <a href="${deal.url}"
                target="_blank"
                class="deal-btn">
-                🛒 Amazon Par Dekho
+                🛒 ${t('buy_now')}
             </a>
         </div>
     `).join('');
@@ -529,15 +535,15 @@ function showArticleError() {
         container.innerHTML = `
             <div style="text-align:center; padding:60px 20px">
                 <p style="font-size:4rem">😔</p>
-                <h2>Article nahi mila!</h2>
+                <h2>${t('article_not_found')}</h2>
                 <p style="color:var(--text-light); margin:12px 0">
-                    Yeh article delete ho gaya ya URL galat hai
+                    ${t('article_missing')}
                 </p>
                 <a href="index.html"
                    style="display:inline-block; margin-top:16px;
                           background:var(--primary); color:white;
                           padding:10px 24px; border-radius:8px">
-                    🏠 Home Par Jayen
+                    🏠 ${t('home')}
                 </a>
             </div>
         `;
@@ -546,13 +552,73 @@ function showArticleError() {
 
 
 // ========================================
+// LANGUAGE SELECTOR INITIALIZATION
+// ========================================
+
+function initArticleLanguageSelector() {
+    const langBtn = document.getElementById('articleLangBtn');
+    const langDropdown = document.getElementById('articleLangDropdown');
+    if (!langBtn || !langDropdown) return;
+
+    // Populate languages from CONFIG
+    const langs = CONFIG.LANGUAGES;
+    const currentLang = localStorage.getItem('article_language') || CONFIG.DEFAULT_LANGUAGE;
+
+    langDropdown.innerHTML = Object.entries(langs).map(([code, lang]) => `
+        <div class="article-lang-option" data-lang="${code}">
+            ${lang.flag} ${lang.native} <small>${lang.name}</small>
+        </div>
+    `).join('');
+
+    // Add click handlers
+    document.querySelectorAll('.article-lang-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const newLang = opt.dataset.lang;
+            // Save preference
+            localStorage.setItem('article_language', newLang);
+            // Also set site language to match? Not necessary, but let's do it for UI
+            if (typeof setSiteLanguage === 'function') {
+                setSiteLanguage(newLang);
+            }
+            // Reload article to reflect new language (backend will need to support? For now just refresh)
+            // To actually change content, we would need a translation API. For UI text, we can update.
+            // Reload the page to fetch article with new lang parameter (backend must support)
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', newLang);
+            window.location.href = url.toString();
+        });
+    });
+
+    // Toggle dropdown
+    langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', () => {
+        langDropdown.classList.remove('show');
+    });
+}
+
+
+// ========================================
 // INIT
 // ========================================
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize language selector UI
+    initArticleLanguageSelector();
+    
+    // Load article and sidebar data
     await Promise.all([
         fetchArticle(),
         fetchTrending()
     ]);
     renderSidebarDeals();
+    
+    // Apply UI translations if function exists
+    if (typeof updateUILanguage === 'function') {
+        updateUILanguage();
+    }
 });
