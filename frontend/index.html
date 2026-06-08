@@ -117,20 +117,25 @@
                     <span class="logo-text">India<span>Xpress</span></span>
                 </a>
             </div>
+            
             <div class="header-actions">
                 <!-- WhatsApp -->
                 <a href="https://www.whatsapp.com/channel/0029VbCy92nBadmau8nw0v3j"
                    target="_blank"
-                   class="whatsapp-btn">
+                   class="whatsapp-btn"
+                   title="Join WhatsApp">
                     <i class="fab fa-whatsapp"></i>
-                    <span class="hide-mobile">Join</span>
                 </a>
+                
                 <!-- Language Selector -->
-                <div id="siteLangSelector"></div>
-                <!-- Theme -->
-                <button class="theme-toggle" id="themeToggle">
+                <div class="lang-selector" id="siteLangSelector"></div>
+                
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="themeToggle" title="Dark/Light Mode">
                     <i class="fas fa-moon"></i>
                 </button>
+                
+                <!-- Menu Toggle -->
                 <button class="menu-toggle" id="menuToggle">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -139,10 +144,11 @@
 
         <!-- Search Bar -->
         <div class="search-bar">
-            <input type="text" id="searchInput" 
-                   data-i18n-placeholder="search_placeholder"
-                   placeholder="Search news...">
-            <button onclick="searchNews()">
+            <input type="text" 
+                   id="searchInput" 
+                   placeholder="Search news..."
+                   data-i18n="search_placeholder">
+            <button onclick="searchNews()" title="Search">
                 <i class="fas fa-search"></i>
             </button>
         </div>
@@ -151,17 +157,64 @@
         <nav class="navbar" id="navbar">
             <ul>
                 <li><a href="index.html" class="active">🏠 <span data-i18n="home">Home</span></a></li>
-                <li><a href="category.html?cat=technology">💻 Technology</a></li>
-                <li><a href="category.html?cat=sports">🏏 Sports</a></li>
-                <li><a href="category.html?cat=business">💼 Business</a></li>
-                <li><a href="category.html?cat=entertainment">🎬 Entertainment</a></li>
-                <li><a href="category.html?cat=education">📚 Education</a></li>
-                <li><a href="category.html?cat=india">🇮🇳 India</a></li>
-                <li><a href="category.html?cat=world">🌍 World</a></li>
+                <li><a href="category.html?cat=technology">💻 <span data-i18n="technology">Technology</span></a></li>
+                <li><a href="category.html?cat=sports">🏏 <span data-i18n="sports">Sports</span></a></li>
+                <li><a href="category.html?cat=business">💼 <span data-i18n="business">Business</span></a></li>
+                <li><a href="category.html?cat=entertainment">🎬 <span data-i18n="entertainment">Entertainment</span></a></li>
+                <li><a href="category.html?cat=education">📚 <span data-i18n="education">Education</span></a></li>
+                <li><a href="category.html?cat=india">🇮🇳 <span data-i18n="india">India</span></a></li>
+                <li><a href="category.html?cat=world">🌍 <span data-i18n="world">World</span></a></li>
             </ul>
         </nav>
     </div>
 </header>
+
+<style>
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.whatsapp-btn {
+    display: flex;
+    align-items: center;
+    background: #25d366;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.whatsapp-btn:hover {
+    background: #128c7e;
+    transform: scale(1.1);
+}
+
+.lang-selector {
+    display: inline-block;
+}
+
+.theme-toggle, .menu-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text);
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.theme-toggle:hover, .menu-toggle:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+</style>
 
 <!-- Breaking News -->
 <div class="breaking-news">
